@@ -1,8 +1,8 @@
 require('dotenv').config();
-const Esempio1 = require('../database/models/esempio1Model');
+const Utente = require('../database/models/utenteModel');
 
 function getPerId(id) {
-    return Esempio1.findOne({_id: id}).lean(); //LA FINDONE E LA LEAN ESISTONO GIA E FANNO PARTE DI MONGOOSE LA LIBRERIA CHE PERMETTE LA CONNESIONE CON MONDODB DA NODE.JS
+    return Utente.findOne({_id: id}).lean(); //LA FINDONE E LA LEAN ESISTONO GIA E FANNO PARTE DI MONGOOSE LA LIBRERIA CHE PERMETTE LA CONNESIONE CON MONDODB DA NODE.JS
 }
 
 //RICORDATEVI CHE TUTTE LE FUNZIONI DI MONGOOSE RITORNANO UNA PROMESSA (QUINDI SONO ASINCRONE), CHI SE LE RICHIAMA DOVRA GESTIRLE O CON AWAIT/ASYNC O CON THEN

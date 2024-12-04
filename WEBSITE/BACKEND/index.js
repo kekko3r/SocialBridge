@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 
 //ESEMPIO DI COME SI DICHIARA UNA ROTTA
 app.use('/rotta1', require('./routes/rotta2'));
-app.use('/rotta2', require('./routes/adminRoute'));
+//app.use('/rotta2', require('./routes/adminRoute'));
 
 app.listen(port, () => {
     console.log("App listening on port " + port);
