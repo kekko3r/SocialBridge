@@ -1,10 +1,13 @@
 require('dotenv').config();
-const Recensione = require('../models/recensioneModel'); // Modello per Recensione
+const Recensione = require('../database/models/recensioneModel'); // Modello per Recensione
 
 const recensioneDAO = {
 
     async createRecensione({ eventoID, autoreID, voto, commento }) { // Crea una nuova recensione
         try {
+            if (voto < 1 || voto > 5) {
+                throw new Error('Voto non valido');
+            }
             const nuovaRecensione = new Recensione({ eventoID, autoreID, voto, commento });
             return await nuovaRecensione.save();
         } catch (error) {
@@ -39,6 +42,9 @@ const recensioneDAO = {
 
     async updateRecensione(recensioneID, { voto, commento }) { // Aggiorna una recensione
         try {
+            if (voto && (voto < 1 || voto > 5)) {
+                throw new Error('Voto non valido');
+            }
             const updateData = {};
             if (voto) updateData.voto = voto;
             if (commento) updateData.commento = commento;
@@ -74,9 +80,9 @@ const recensioneDAO = {
         }
     },
 
-    async findAll() { // Recupera tutte le recensioni
+    async findAll(filters = {}) { // Recupera tutte le recensioni con filtri opzionali
         try {
-            return await Recensione.find().lean();
+            return await Recensione.find(filters).lean();
         } catch (error) {
             console.error('Errore durante il recupero delle recensioni:', error);
             throw error;

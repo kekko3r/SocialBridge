@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+if (process.env.NODE_ENV !== 'test')
+    {
+        const db = require('../conn');
+    }
+
 const messaggioSchema = new Schema({
     mittenteID: {
         type: Schema.Types.ObjectId, // Assumiamo che sia un riferimento a un utente

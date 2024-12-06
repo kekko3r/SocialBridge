@@ -1,5 +1,5 @@
 require('dotenv').config();
-const Notifiche = require('../models/GestioneNotificheModel');
+const Notifiche = require('../database/models/GestioneNotificheModel');
 
 const GestioneNotificheDAO = {
     // Invia una notifica a un utente
@@ -20,7 +20,7 @@ const GestioneNotificheDAO = {
             return await notifica.save();
         } catch (error) {
             console.error('Errore durante l\'invio della notifica:', error.message);
-            throw new Error('Errore nell\'invio della notifica');
+            throw error;
         }
     },
 
@@ -34,13 +34,13 @@ const GestioneNotificheDAO = {
 
             // Recupero delle notifiche per l'utente specifico
             const notifiche = await Notifiche.find({ userID })
-                .select('messaggio letto dataInvio') // Seleziona campi necessari
+                .select('userID messaggio letto dataInvio') // Seleziona campi necessari
                 .sort({ dataInvio: -1 }); // Ordina per data di invio decrescente
 
             return notifiche;
         } catch (error) {
             console.error('Errore durante il recupero delle notifiche:', error.message);
-            throw new Error('Errore nel recupero delle notifiche');
+            throw error;
         }
     },
 
@@ -74,7 +74,7 @@ const GestioneNotificheDAO = {
             return notificaAggiornata;
         } catch (error) {
             console.error('Errore durante l\'aggiornamento della notifica:', error.message);
-            throw new Error('Errore nell\'aggiornamento della notifica');
+            throw error;
         }
     },
 
@@ -94,7 +94,7 @@ const GestioneNotificheDAO = {
             return notificaEliminata;
         } catch (error) {
             console.error('Errore durante l\'eliminazione della notifica:', error.message);
-            throw new Error('Errore nell\'eliminazione della notifica');
+            throw error;
         }
     },
 

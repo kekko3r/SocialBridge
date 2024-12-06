@@ -1,6 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const Utente = require('../models/GestioneUtenteModel');
+const Utente = require('../database/models/GestioneUtenteModel');
 
 //IL MIDDLEWARE E UNA FUNZIONE CHE SI FRAPPONE TRA LA CHIAMATA DELLA ROTTA E IL CONTROLLER.
 //QUINDI VIENE ESEGUITO PRIMA IL MIDDLEWARE E POI IL CONTROLLER

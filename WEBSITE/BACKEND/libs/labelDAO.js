@@ -1,5 +1,5 @@
 require('dotenv').config();
-const Label = require('../models/labelModel');
+const Label = require('../database/models/labelModel');
 
 const labelDAO = {
     // Crea una nuova label nel database con i dati forniti

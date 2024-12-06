@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+if (process.env.NODE_ENV !== 'test')
+    {
+        const db = require('../conn');
+    } 
+
 const assistenzaUtenteSchema = new Schema({
     userID: {
         type: Schema.Types.ObjectId,

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Middleware = require('../libs/middleware');
-const affinitaController = require('../controllers/GestioneAffinitaController'); // Assicurati che il percorso sia corretto
+const affinitaController = require('../database/controllers/GestioneAffinitaController'); 
 
 router.use(express.json()); // Middleware per il parsing JSON
 

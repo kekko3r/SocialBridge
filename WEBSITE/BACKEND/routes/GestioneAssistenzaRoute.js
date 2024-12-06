@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Middleware = require('../libs/middleware'); // Assicurati che il percorso sia corretto
-const assistenzaController = require('../controllers/GestioneAssistenzaUtenteController'); // Controller per le richieste di assistenza
+const Middleware = require('../libs/middleware'); 
+const assistenzaController = require('../database/controllers/GestioneAssistenzaUtenteController'); // Controller per le richieste di assistenza
 
 router.use(express.json()); // Serve per convertire automaticamente i dati JSON inviati dal frontend in oggetti JavaScript
 

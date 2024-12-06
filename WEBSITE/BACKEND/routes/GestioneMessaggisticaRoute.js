@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Middleware = require('../libs/middleware');
-const messaggioController = require('../controllers/GestioneMessagisticaController');
+const messaggioController = require('../database/controllers/GestioneMessagisticaController');
 
 router.use(express.json()); // Middleware per il parsing JSON
 

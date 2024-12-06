@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const checkJwt = require('../libs/middleware');
-const eventController = require('../controllers/GestioneEventiController'); // Assicurati che il percorso sia corretto
+const eventController = require('../database/controllers/GestioneEventiController'); 
 
 router.use(express.json()); // Serve per convertire automaticamente i dati JSON inviati dal frontend in oggetti JavaScript
 

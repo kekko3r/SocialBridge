@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const checkJwt = require('../libs/middleware');
-const recensioneController = require('../controllers/recensioneController'); // Assicurati che il percorso sia corretto
+const recensioneController = require('../database/controllers/recensioneController'); 
 
 router.use(express.json()); // Serve per convertire automaticamente i dati JSON inviati dal frontend in oggetti JavaScript
 

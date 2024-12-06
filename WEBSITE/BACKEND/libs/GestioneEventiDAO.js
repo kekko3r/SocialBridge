@@ -1,8 +1,9 @@
 require('dotenv').config();
-const Evento = require('../models/GestioneEventiModel');
+const mongoose = require('mongoose');
+const Evento = require('../database/models/GestioneEventiModel'); // Modello per Evento
+const Utente = require('../database/models/GestioneUtenteModel'); // Modello per Utente
 
 const GestioneEventiDAO = {
-
     // Crea un nuovo evento nel database con validazione interna
     async createEvent({
         titolo,
@@ -83,7 +84,13 @@ const GestioneEventiDAO = {
             if (pieno !== undefined) updateData.pieno = pieno;
             if (labels) updateData.labels = labels;
 
-            return await Evento.findByIdAndUpdate(eventID, updateData, { new: true });
+            const eventoAggiornato = await Evento.findByIdAndUpdate(eventID, updateData, { new: true });
+
+            if (!eventoAggiornato) {
+                throw new Error('Evento non trovato');
+            }
+
+            return eventoAggiornato;
         } catch (error) {
             console.error("Errore durante l'aggiornamento dell'evento:", error);
             throw error;
@@ -94,21 +101,35 @@ const GestioneEventiDAO = {
     async searchEvents({ titolo, descrizione, data, ora, luogo, accessibilita, labels }) {
         try {
             const filters = {};
-
-            if (titolo) filters.titolo = { $regex: new RegExp(titolo, 'i') };
+    
+            // Aggiunta filtri dinamici se i parametri sono forniti
+            if (titolo) filters.titolo = { $regex: new RegExp(titolo, 'i') }; // Ricerca case-insensitive
             if (descrizione) filters.descrizione = { $regex: new RegExp(descrizione, 'i') };
-            if (data) filters.data = data;
+            if (data) filters.data = new Date(data); // Assicura che sia un oggetto Date
             if (ora) filters.ora = ora;
             if (luogo) filters.luogo = { $regex: new RegExp(luogo, 'i') };
             if (accessibilita) filters.accessibilita = accessibilita;
-            if (labels && labels.length > 0) filters.labels = { $all: labels };
-
-            return await Evento.find(filters).populate('organizzatoreID', 'nome email');
+    
+            // Gestione array di labels con $all
+            if (labels && Array.isArray(labels) && labels.length > 0) {
+                filters.labels = { $all: labels }; // Tutte le etichette devono essere presenti
+            }
+    
+            console.log("Filtri applicati:", filters); // Log per debug
+    
+            // Esegue la query con i filtri
+            const eventi = await Evento.find(filters)
+                .populate('organizzatoreID', 'nome email') // Popola campi dell'organizzatore
+                .lean(); // Restituisce oggetti JS normali, non documenti Mongoose
+    
+            console.log("Eventi trovati:", eventi);
+            return eventi;
         } catch (error) {
-            console.error("Errore durante la ricerca degli eventi:", error);
-            throw error;
+            console.error("Errore durante la ricerca degli eventi:", error.message);
+            throw new Error("Errore nel recupero degli eventi");
         }
     },
+    
 
     // Fornisce i dettagli di un evento cercato dall'ID
     async getEventDetails(eventID) {

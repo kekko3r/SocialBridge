@@ -1,22 +1,16 @@
 require('dotenv').config();
-const Messaggio = require('../models/GestioneMessagisticaModel');
+const Messaggio = require('../database/models/GestioneMessaggisticaModel');
 
-const GestioneMessagisticaDAO = {
+const GestioneMessaggisticaDAO = {
     // Invia un messaggio testuale
-    async sendMessage(senderID, receiverID, text) {
+    async sendMessage(mittenteID, destinatarioID, testo) {
         try {
-            if (!senderID || !receiverID || !text) {
+            if (!mittenteID || !destinatarioID || !testo) {
                 throw new Error("Tutti i campi obbligatori devono essere forniti (mittenteID, destinatarioID, testo).");
             }
 
-            const newMessaggio = new Messaggio({ mittenteID: senderID, destinatarioID: receiverID, testo: text });
-            const result = await newMessaggio.save();
-
-            if (!result) {
-                throw new Error("Errore nel salvataggio del nuovo messaggio.");
-            }
-
-            return result;
+            const newMessaggio = new Messaggio({ mittenteID, destinatarioID, testo });
+            return await newMessaggio.save();
         } catch (err) {
             console.error(`Errore nell'invio del messaggio: ${err.message}`);
             throw new Error(`Errore nell'invio del messaggio: ${err.message}`);
@@ -30,14 +24,12 @@ const GestioneMessagisticaDAO = {
                 throw new Error("Gli ID degli utenti non possono essere nulli.");
             }
 
-            const messages = await Messaggio.find({
+            return await Messaggio.find({
                 $or: [
                     { mittenteID: user1ID, destinatarioID: user2ID },
                     { mittenteID: user2ID, destinatarioID: user1ID }
                 ]
-            }).exec();
-
-            return messages;
+            }).sort({ dataInvio: 1 }).exec();
         } catch (err) {
             console.error(`Errore nel recupero dei messaggi tra gli utenti: ${err.message}`);
             throw new Error(`Errore nel recupero dei messaggi tra gli utenti: ${err.message}`);
@@ -45,14 +37,14 @@ const GestioneMessagisticaDAO = {
     },
 
     // Notifica la ricezione di un messaggio
-    async notifyMessage(receiverID, messageID) {
+    async notifyMessage(destinatarioID, messaggioID) {
         try {
-            if (!receiverID || !messageID) {
+            if (!destinatarioID || !messaggioID) {
                 throw new Error("L'ID del destinatario e del messaggio non possono essere nulli.");
             }
 
             const result = await Messaggio.findByIdAndUpdate(
-                messageID,
+                messaggioID,
                 { notificato: true },
                 { new: true }
             ).exec();
@@ -69,25 +61,19 @@ const GestioneMessagisticaDAO = {
     },
 
     // Invia un messaggio multimediale
-    async sendMultimediaMessage(senderID, receiverID, media) {
+    async sendMultimediaMessage(mittenteID, destinatarioID, media) {
         try {
-            if (!senderID || !receiverID || !media) {
+            if (!mittenteID || !destinatarioID || !media) {
                 throw new Error("Tutti i campi obbligatori devono essere forniti (mittenteID, destinatarioID, media).");
             }
 
             const newMessaggio = new Messaggio({
-                mittenteID: senderID,
-                destinatarioID: receiverID,
+                mittenteID,
+                destinatarioID,
                 media
             });
 
-            const result = await newMessaggio.save();
-
-            if (!result) {
-                throw new Error("Errore nel salvataggio del messaggio multimediale.");
-            }
-
-            return result;
+            return await newMessaggio.save();
         } catch (err) {
             console.error(`Errore nell'invio del messaggio multimediale: ${err.message}`);
             throw new Error(`Errore nell'invio del messaggio multimediale: ${err.message}`);
@@ -95,16 +81,16 @@ const GestioneMessagisticaDAO = {
     },
 
     // Elimina un messaggio specifico
-    async deleteMessage(messageID) {
+    async deleteMessage(messaggioID) {
         try {
-            if (!messageID) {
+            if (!messaggioID) {
                 throw new Error("L'ID del messaggio non può essere nullo.");
             }
 
-            const deletedMessaggio = await Messaggio.findByIdAndDelete(messageID).exec();
+            const deletedMessaggio = await Messaggio.findByIdAndDelete(messaggioID).exec();
 
             if (!deletedMessaggio) {
-                throw new Error("Impossibile eliminare il messaggio, ID non trovato.");
+                return null; // Restituisci null se il messaggio non viene trovato
             }
 
             return deletedMessaggio;
@@ -115,14 +101,14 @@ const GestioneMessagisticaDAO = {
     },
 
     // Segna un messaggio come letto
-    async markMessageAsRead(messageID, stato) {
+    async markMessageAsRead(messaggioID, stato) {
         try {
-            if (!messageID || stato !== "letto") {
+            if (!messaggioID || stato !== "letto") {
                 throw new Error("L'ID del messaggio non può essere nullo e lo stato deve essere 'letto'.");
             }
 
             const updatedMessaggio = await Messaggio.findByIdAndUpdate(
-                messageID,
+                messaggioID,
                 { stato },
                 { new: true }
             ).exec();
@@ -139,4 +125,4 @@ const GestioneMessagisticaDAO = {
     }
 };
 
-module.exports = GestioneMessagisticaDAO;
+module.exports = GestioneMessaggisticaDAO;

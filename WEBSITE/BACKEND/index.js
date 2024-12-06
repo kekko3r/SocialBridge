@@ -1,17 +1,9 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
+require('./conn'); // Importa il file di connessione al database
 
 const app = express();
 const port = process.env.SERVER_PORT || 3000;
-const mongoURL = process.env.MONGODB_URI;
-
-// Connessione a MongoDB
-mongoose.connect(mongoURL)
-    .then(() => {
-        console.log('Connected to MongoDB');
-    })
-    .catch(err => console.error('Errore di connessione a MongoDB:', err));
 
 // Middleware globale per logging delle richieste
 app.use((req, res, next) => {
@@ -34,10 +26,10 @@ const routes = {
     affinity: require('./routes/affinitaRoute'), // Gestione delle affinità
     review: require('./routes/recensioneRoute'), // Gestione delle recensioni
     notification: require('./routes/GestioneNotificheRoute'), // Gestione delle notifiche
-    assistance: require('./routes/GestioneAssistenzaUtenteRoute') //Gestione assisstenza utente
+    assistance: require('./routes/GestioneAssistenzaUtenteRoute') // Gestione dell'assistenza
 };
 
-// Montaggio dei router (da commentare o attivare a seconda delle esigenze)
+// Montaggio dei router
 app.use('/users', routes.user);
 app.use('/events', routes.event);
 app.use('/messages', routes.message);
