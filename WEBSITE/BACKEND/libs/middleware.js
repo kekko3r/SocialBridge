@@ -1,8 +1,8 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const Utente = require('../database/models/utenteModel');
+const Utente = require('../models/GestioneUtenteModel');
 
-//IL MIDDLEWARE E UNA FUNZIONE CHE SI FRAPPONE TRA LA CHIAMATA DELLA ROTTA E IL CONTROLLE.
+//IL MIDDLEWARE E UNA FUNZIONE CHE SI FRAPPONE TRA LA CHIAMATA DELLA ROTTA E IL CONTROLLER.
 //QUINDI VIENE ESEGUITO PRIMA IL MIDDLEWARE E POI IL CONTROLLER
 //E UTILE QUANDO SI DEVE VERIFICARE L'AUTENTICAZIONE
 //COSI SI SCRIVE UN SOLO CODICE E VALE PER TUTTI
@@ -36,7 +36,7 @@ function checkJwt(max = 1000, min = 0) {
             }
             // Use the decoded token to get user info and attach it in the request object
 
-            req.user = await Esempio1.findOne({_id: decoded.id});
+            req.user = await Utente.findOne({_id: decoded.id});
 
             if(req.user.deleted || req.user.suspended){
                 return res.status(403).json({ message: "Your account has been blocked. Please contact support." });

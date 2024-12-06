@@ -15,8 +15,15 @@ const affinitaSchema = new Schema({
     punteggio: {
         type: Number,
         required: true
+    },
+    dataCreazione: {
+        type: Date,
+        default: Date.now
     }
 });
+
+// Aggiunta di un indice combinato per migliorare le prestazioni nelle query
+affinitaSchema.index({ utente1ID: 1, utente2ID: 1 }, { unique: true });
 
 const Affinita = mongoose.model('Affinita', affinitaSchema);
 module.exports = Affinita;
