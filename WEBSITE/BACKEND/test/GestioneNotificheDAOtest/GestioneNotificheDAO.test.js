@@ -20,6 +20,8 @@ beforeEach(async () => {
     await Notifiche.deleteMany(); // Pulisci il database tra i test
 });
 
+describe('GestioneNotificheDAO', () => {
+
 //------------------------------------------SendNotification-------------------------------------------------------------------------
 
 describe('sendNotification', () => {
@@ -383,4 +385,5 @@ describe('findAll', () => {
     
         expect(notifiche).toHaveLength(0);
     });
+});
 });

@@ -51,15 +51,15 @@ const affinitaDAO = {
                 throw new Error("L'ID dell'utente non può essere nullo.");
             }
 
-            const affinità = await Affinita.find({
+            const affinita = await Affinita.find({
                 $or: [{ utente1ID: utenteID }, { utente2ID: utenteID }]
             }).exec();
 
-            if (!affinità || affinità.length === 0) {
+            if (!affinita || affinita.length === 0) {
                 throw new Error("Nessuna affinità trovata per l'utente.");
             }
 
-            return affinità;
+            return affinita;
         } catch (err) {
             throw new Error(`Errore nella ricerca delle affinità dell'utente: ${err.message}`);
         }

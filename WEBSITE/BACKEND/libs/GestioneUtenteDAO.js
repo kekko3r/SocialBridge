@@ -5,12 +5,17 @@ const bcrypt = require('bcrypt');
 const GestioneUtenteDAO = {
     async registerUser({ email, password, nome, cognome, ruolo }) { // Registra un nuovo utente
         try {
+            // Controlla se tutti i campi obbligatori sono forniti
+            if (!email || !password || !nome || !cognome || !ruolo) {
+                throw new Error('Tutti i campi obbligatori devono essere forniti.');
+            }
+    
             // Controlla se l'email esiste già
             const existingUser = await Utente.findOne({ email });
             if (existingUser) {
                 throw new Error('Errore durante la registrazione dell\'utente: email già esistente');
             }
-
+    
             // Crea un nuovo utente
             const hashedPassword = await bcrypt.hash(password, 10);
             const nuovoUtente = new Utente({ email, password: hashedPassword, nome, cognome, ruolo });

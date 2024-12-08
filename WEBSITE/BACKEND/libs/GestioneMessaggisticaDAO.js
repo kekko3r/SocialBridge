@@ -1,4 +1,5 @@
 require('dotenv').config();
+const mongoose = require('mongoose');
 const Messaggio = require('../database/models/GestioneMessaggisticaModel');
 
 const GestioneMessaggisticaDAO = {
@@ -20,10 +21,10 @@ const GestioneMessaggisticaDAO = {
     // Recupera la cronologia dei messaggi tra due utenti
     async getMessagesBetweenUsers(user1ID, user2ID) {
         try {
-            if (!user1ID || !user2ID) {
-                throw new Error("Gli ID degli utenti non possono essere nulli.");
+            if (!mongoose.Types.ObjectId.isValid(user1ID) || !mongoose.Types.ObjectId.isValid(user2ID)) {
+                throw new Error("Gli ID degli utenti non sono validi.");
             }
-
+    
             return await Messaggio.find({
                 $or: [
                     { mittenteID: user1ID, destinatarioID: user2ID },
@@ -39,20 +40,20 @@ const GestioneMessaggisticaDAO = {
     // Notifica la ricezione di un messaggio
     async notifyMessage(destinatarioID, messaggioID) {
         try {
-            if (!destinatarioID || !messaggioID) {
-                throw new Error("L'ID del destinatario e del messaggio non possono essere nulli.");
+            if (!mongoose.Types.ObjectId.isValid(messaggioID) || !mongoose.Types.ObjectId.isValid(destinatarioID)) {
+                throw new Error("L'ID del destinatario o del messaggio non è valido.");
             }
-
+    
             const result = await Messaggio.findByIdAndUpdate(
                 messaggioID,
                 { notificato: true },
                 { new: true }
             ).exec();
-
+    
             if (!result) {
                 throw new Error("Impossibile notificare il messaggio, ID non trovato.");
             }
-
+    
             return result;
         } catch (err) {
             console.error(`Errore nella notifica del messaggio: ${err.message}`);
@@ -83,16 +84,16 @@ const GestioneMessaggisticaDAO = {
     // Elimina un messaggio specifico
     async deleteMessage(messaggioID) {
         try {
-            if (!messaggioID) {
-                throw new Error("L'ID del messaggio non può essere nullo.");
+            if (!mongoose.Types.ObjectId.isValid(messaggioID)) {
+                throw new Error("L'ID del messaggio non è valido.");
             }
-
+    
             const deletedMessaggio = await Messaggio.findByIdAndDelete(messaggioID).exec();
-
+    
             if (!deletedMessaggio) {
                 return null; // Restituisci null se il messaggio non viene trovato
             }
-
+    
             return deletedMessaggio;
         } catch (err) {
             console.error(`Errore nell'eliminazione del messaggio: ${err.message}`);
@@ -101,22 +102,22 @@ const GestioneMessaggisticaDAO = {
     },
 
     // Segna un messaggio come letto
-    async markMessageAsRead(messaggioID, stato) {
+    async markMessageAsRead(messaggioID, stato) { 
         try {
-            if (!messaggioID || stato !== "letto") {
-                throw new Error("L'ID del messaggio non può essere nullo e lo stato deve essere 'letto'.");
+            if (!mongoose.Types.ObjectId.isValid(messaggioID) || stato !== "letto") {
+                throw new Error("L'ID del messaggio non è valido o lo stato non è 'letto'.");
             }
-
+    
             const updatedMessaggio = await Messaggio.findByIdAndUpdate(
                 messaggioID,
                 { stato },
                 { new: true }
             ).exec();
-
+    
             if (!updatedMessaggio) {
                 throw new Error("Impossibile aggiornare lo stato del messaggio, ID non trovato.");
             }
-
+    
             return updatedMessaggio;
         } catch (err) {
             console.error(`Errore nel marcare il messaggio come letto: ${err.message}`);

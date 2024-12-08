@@ -42,7 +42,7 @@ const GestioneEventiDAO = {
 
             return await evento.save();
         } catch (error) {
-            console.error("Errore durante la creazione dell'evento:", error);
+            console.error("Errore durante la creazione dell'evento:", error.message);
             throw error;
         }
     },
@@ -64,7 +64,7 @@ const GestioneEventiDAO = {
 
             return await event.save();
         } catch (error) {
-            console.error("Errore durante la registrazione all'evento:", error);
+            console.error("Errore durante la registrazione all'evento:", error.message);
             throw error;
         }
     },
@@ -72,8 +72,12 @@ const GestioneEventiDAO = {
     // Aggiorna i campi dell'evento
     async updateEvent(eventID, { titolo, descrizione, data, ora, luogo, accessibilita, partecipantiMAX, pieno, labels }) {
         try {
+            if (!mongoose.Types.ObjectId.isValid(eventID)) {
+                throw new Error("L'ID dell'evento non è valido.");
+            }
+    
             const updateData = {};
-
+    
             if (titolo) updateData.titolo = titolo;
             if (descrizione) updateData.descrizione = descrizione;
             if (data) updateData.data = data;
@@ -83,16 +87,16 @@ const GestioneEventiDAO = {
             if (partecipantiMAX) updateData.partecipantiMAX = partecipantiMAX;
             if (pieno !== undefined) updateData.pieno = pieno;
             if (labels) updateData.labels = labels;
-
+    
             const eventoAggiornato = await Evento.findByIdAndUpdate(eventID, updateData, { new: true });
-
+    
             if (!eventoAggiornato) {
                 throw new Error('Evento non trovato');
             }
-
+    
             return eventoAggiornato;
         } catch (error) {
-            console.error("Errore durante l'aggiornamento dell'evento:", error);
+            console.error("Errore durante l'aggiornamento dell'evento:", error.message);
             throw error;
         }
     },
@@ -105,7 +109,13 @@ const GestioneEventiDAO = {
             // Aggiunta filtri dinamici se i parametri sono forniti
             if (titolo) filters.titolo = { $regex: new RegExp(titolo, 'i') }; // Ricerca case-insensitive
             if (descrizione) filters.descrizione = { $regex: new RegExp(descrizione, 'i') };
-            if (data) filters.data = new Date(data); // Assicura che sia un oggetto Date
+            if (data) {
+                const parsedDate = new Date(data);
+                if (isNaN(parsedDate)) {
+                    throw new Error("La data fornita non è valida.");
+                }
+                filters.data = parsedDate; // Assicura che sia un oggetto Date
+            }
             if (ora) filters.ora = ora;
             if (luogo) filters.luogo = { $regex: new RegExp(luogo, 'i') };
             if (accessibilita) filters.accessibilita = accessibilita;
@@ -152,13 +162,22 @@ const GestioneEventiDAO = {
     // Elimina un evento dal database
     async deleteEvent(eventID) {
         try {
-            return await Evento.findByIdAndDelete(eventID);
+            if (!mongoose.Types.ObjectId.isValid(eventID)) {
+                throw new Error("L'ID dell'evento non è valido.");
+            }
+    
+            const eventoEliminato = await Evento.findByIdAndDelete(eventID);
+    
+            if (!eventoEliminato) {
+                return null; // Restituisci null se l'evento non viene trovato
+            }
+    
+            return eventoEliminato;
         } catch (error) {
-            console.error("Errore durante l'eliminazione dell'evento:", error);
+            console.error("Errore durante l'eliminazione dell'evento:", error.message);
             throw error;
         }
     }
-
-}
+};
 
 module.exports = GestioneEventiDAO;
