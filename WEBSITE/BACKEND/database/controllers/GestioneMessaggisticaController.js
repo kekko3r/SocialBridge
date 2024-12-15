@@ -1,4 +1,4 @@
-const messaggioDAO = require('../libs/GestioneMessagisticaDAO');
+const messaggioDAO = require('../../libs/GestioneMessaggisticaDAO');
 
 const GestioneMessagisticaController = {
     async sendMessage(req, res) {

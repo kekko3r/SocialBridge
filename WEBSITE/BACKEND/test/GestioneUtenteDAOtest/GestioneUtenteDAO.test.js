@@ -78,7 +78,7 @@ describe('GestioneUtenteDAO', () => {
         });
     });
     
- //-----------------------------------------DeleteUser-----------------------------------------------------------
+//-----------------------------------------DeleteUser-----------------------------------------------------------
 
     describe('deleteUser', () => {
         test('should delete a user (case 1)', async () => {
@@ -277,7 +277,7 @@ describe('GestioneUtenteDAO', () => {
         });
     });
 
- //-----------------------------------------UpdateProfile-----------------------------------------------------------
+//-----------------------------------------UpdateProfile-----------------------------------------------------------
 
     describe('updateProfile', () => {
         test('should update the user profile with valid data (case 1)', async () => {
@@ -285,15 +285,13 @@ describe('GestioneUtenteDAO', () => {
                 nome: 'Lino',
                 cognome: 'Banfi',
                 email: 'linobanfi@example.com',
-                password: 'Prova123_',
-                ruolo: 'utente'
+                password: 'Prova123_'
             });
 
             const updateData = {
                 nome: 'Daniele',
                 cognome: 'De Rossi',
-                email: 'danielederossi@example.com',
-                ruolo: 'admin'
+                email: 'danielederossi@example.com'
             };
 
             const updatedUser = await GestioneUtenteDAO.updateProfile(user1._id, updateData);
@@ -302,7 +300,6 @@ describe('GestioneUtenteDAO', () => {
             expect(updatedUser.nome).toBe(updateData.nome);
             expect(updatedUser.cognome).toBe(updateData.cognome);
             expect(updatedUser.email).toBe(updateData.email);
-            expect(updatedUser.ruolo).toBe(updateData.ruolo);
         });
 
         test('should update the user profile with valid data (case 2)', async () => {
@@ -310,15 +307,13 @@ describe('GestioneUtenteDAO', () => {
                 nome: 'Carlo',
                 cognome: 'Verdone',
                 email: 'carloverdone@example.com',
-                password: 'Password123',
-                ruolo: 'utente'
+                password: 'Password123'
             });
 
             const updateData = {
                 nome: 'Gianluca',
                 cognome: 'Vialli',
-                email: 'gianlucavialli@example.com',
-                ruolo: 'admin'
+                email: 'gianlucavialli@example.com'
             };
 
             const updatedUser = await GestioneUtenteDAO.updateProfile(user2._id, updateData);
@@ -327,7 +322,6 @@ describe('GestioneUtenteDAO', () => {
             expect(updatedUser.nome).toBe(updateData.nome);
             expect(updatedUser.cognome).toBe(updateData.cognome);
             expect(updatedUser.email).toBe(updateData.email);
-            expect(updatedUser.ruolo).toBe(updateData.ruolo);
         });
 
         test('should update the user profile with valid data (case 3)', async () => {
@@ -335,15 +329,13 @@ describe('GestioneUtenteDAO', () => {
                 nome: 'Alberto',
                 cognome: 'Sordi',
                 email: 'albertosordi@example.com',
-                password: 'Password456',
-                ruolo: 'admin'
+                password: 'Password456'
             });
 
             const updateData = {
                 nome: 'Francesco',
                 cognome: 'Totti',
-                email: 'francescototti@example.com',
-                ruolo: 'admin'
+                email: 'francescototti@example.com'
             };
 
             const updatedUser = await GestioneUtenteDAO.updateProfile(user3._id, updateData);
@@ -352,7 +344,6 @@ describe('GestioneUtenteDAO', () => {
             expect(updatedUser.nome).toBe(updateData.nome);
             expect(updatedUser.cognome).toBe(updateData.cognome);
             expect(updatedUser.email).toBe(updateData.email);
-            expect(updatedUser.ruolo).toBe(updateData.ruolo);
         });
 
         test('should not update fields if no valid data is provided (case 1)', async () => {
@@ -360,8 +351,7 @@ describe('GestioneUtenteDAO', () => {
                 nome: 'Pizza',
                 cognome: 'Margherita',
                 email: 'pizzamargherita@example.com',
-                password: 'Prova123_',
-                ruolo: 'utente'
+                password: 'Prova123_'
             });
         
             const updateData = {}; // Nessun campo da aggiornare
@@ -372,7 +362,6 @@ describe('GestioneUtenteDAO', () => {
             expect(updatedUser.nome).toBe(user1.nome);
             expect(updatedUser.cognome).toBe(user1.cognome);
             expect(updatedUser.email).toBe(user1.email);
-            expect(updatedUser.ruolo).toBe(user1.ruolo);
         });
         
         test('should not update fields if no valid data is provided (case 2)', async () => {
@@ -380,8 +369,7 @@ describe('GestioneUtenteDAO', () => {
                 nome: 'Risotto',
                 cognome: 'Alla Milanese',
                 email: 'risottomilanese@example.com',
-                password: 'Password123',
-                ruolo: 'utente'
+                password: 'Password123'
             });
         
             const updateData = {}; // Nessun campo da aggiornare
@@ -392,7 +380,6 @@ describe('GestioneUtenteDAO', () => {
             expect(updatedUser.nome).toBe(user2.nome);
             expect(updatedUser.cognome).toBe(user2.cognome);
             expect(updatedUser.email).toBe(user2.email);
-            expect(updatedUser.ruolo).toBe(user2.ruolo);
         });
         
         test('should not update fields if no valid data is provided (case 3)', async () => {
@@ -400,8 +387,7 @@ describe('GestioneUtenteDAO', () => {
                 nome: 'Pasta',
                 cognome: 'Alla Carbonara',
                 email: 'pastacarbonara@example.com',
-                password: 'Password456',
-                ruolo: 'admin'
+                password: 'Password456'
             });
         
             const updateData = {}; // Nessun campo da aggiornare
@@ -412,11 +398,10 @@ describe('GestioneUtenteDAO', () => {
             expect(updatedUser.nome).toBe(user3.nome);
             expect(updatedUser.cognome).toBe(user3.cognome);
             expect(updatedUser.email).toBe(user3.email);
-            expect(updatedUser.ruolo).toBe(user3.ruolo);
         });
     });
     
- //-----------------------------------------RegisterUser-----------------------------------------------------------
+//-----------------------------------------RegisterUser-----------------------------------------------------------
 
     describe('registerUser', () => {
         test('should create a new user (case 1)', async () => {
@@ -424,8 +409,7 @@ describe('GestioneUtenteDAO', () => {
                 nome: 'Diego',
                 cognome: 'Maradona',
                 email: 'diego.maradona@example.com',
-                password: 'Password123',
-                ruolo: 'utente'
+                password: 'Password123'
             };
 
             const createdUser = await GestioneUtenteDAO.registerUser(newUser);
@@ -434,7 +418,6 @@ describe('GestioneUtenteDAO', () => {
             expect(createdUser.nome).toBe('Diego');
             expect(createdUser.cognome).toBe('Maradona');
             expect(createdUser.email).toBe('diego.maradona@example.com');
-            expect(createdUser.ruolo).toBe('utente');
         });
 
         test('should create a new user (case 2)', async () => {
@@ -442,8 +425,7 @@ describe('GestioneUtenteDAO', () => {
                 nome: 'Trimo',
                 cognome: 'Rimo',
                 email: 'trimo.rimo@example.com',
-                password: 'Password456',
-                ruolo: 'admin'
+                password: 'Password456'
             };
 
             const createdUser = await GestioneUtenteDAO.registerUser(newUser);
@@ -452,7 +434,6 @@ describe('GestioneUtenteDAO', () => {
             expect(createdUser.nome).toBe('Trimo');
             expect(createdUser.cognome).toBe('Rimo');
             expect(createdUser.email).toBe('trimo.rimo@example.com');
-            expect(createdUser.ruolo).toBe('admin');
         });
 
         test('should create a new user (case 3)', async () => {
@@ -460,8 +441,7 @@ describe('GestioneUtenteDAO', () => {
                 nome: 'Pino',
                 cognome: 'Daniele',
                 email: 'pino.daniele@example.com',
-                password: 'Password456',
-                ruolo: 'admin'
+                password: 'Password456'
             };
 
             const createdUser = await GestioneUtenteDAO.registerUser(newUser);
@@ -470,7 +450,6 @@ describe('GestioneUtenteDAO', () => {
             expect(createdUser.nome).toBe('Pino');
             expect(createdUser.cognome).toBe('Daniele');
             expect(createdUser.email).toBe('pino.daniele@example.com');
-            expect(createdUser.ruolo).toBe('admin');
         });
 
         test('should throw an error when registering a user with an existing email (case 1)', async () => {
@@ -478,16 +457,14 @@ describe('GestioneUtenteDAO', () => {
                 nome: 'Trimone',
                 cognome: 'Limone',
                 email: 'trimone.limone@example.com',
-                password: 'Password123',
-                ruolo: 'utente'
+                password: 'Password123'
             });
         
             const userData = {
                 email: 'trimone.limone@example.com',
                 password: 'Prova123_',
                 nome: 'Duplicate',
-                cognome: 'User',
-                ruolo: 'utente'
+                cognome: 'User'
             };
         
             await expect(
@@ -500,16 +477,14 @@ describe('GestioneUtenteDAO', () => {
                 nome: 'Lena',
                 cognome: 'Siena',
                 email: 'lena.siena@example.com',
-                password: 'Password456',
-                ruolo: 'admin'
+                password: 'Password456'
             });
         
             const userData = {
                 email: 'lena.siena@example.com',
                 password: 'Prova456_',
                 nome: 'Duplicate',
-                cognome: 'User',
-                ruolo: 'admin'
+                cognome: 'User'
             };
         
             await expect(
@@ -522,16 +497,14 @@ describe('GestioneUtenteDAO', () => {
                 nome: 'Marco',
                 cognome: 'Bianchi',
                 email: 'marco.bianchi@example.com',
-                password: 'Password789',
-                ruolo: 'utente'
+                password: 'Password789'
             });
         
             const userData = {
                 email: 'marco.bianchi@example.com',
                 password: 'Prova789_',
                 nome: 'Duplicate',
-                cognome: 'User',
-                ruolo: 'utente'
+                cognome: 'User'
             };
         
             await expect(
@@ -543,38 +516,140 @@ describe('GestioneUtenteDAO', () => {
             const incompleteData = {
                 password: 'Prova123_',
                 nome: 'Incomplete',
-                cognome: 'User',
-                ruolo: 'utente'
+                cognome: 'User'
             };
         
             await expect(
                 GestioneUtenteDAO.registerUser(incompleteData)
-            ).rejects.toThrow('Errore durante la registrazione dell\'utente');
+            ).rejects.toThrow('Tutti i campi obbligatori devono essere forniti.');
         });
         
         test('should throw an error when required fields are missing (case 2)', async () => {
             const incompleteData = {
                 email: 'incomplete.user@example.com',
                 nome: 'Incomplete',
-                cognome: 'User',
-                ruolo: 'utente'
+                cognome: 'User'
             };
         
             await expect(
                 GestioneUtenteDAO.registerUser(incompleteData)
-            ).rejects.toThrow('Errore durante la registrazione dell\'utente');
+            ).rejects.toThrow('Tutti i campi obbligatori devono essere forniti.');
         });
         
         test('should throw an error when required fields are missing (case 3)', async () => {
             const incompleteData = {
                 email: 'incomplete.user@example.com',
-                password: 'Prova123_',
-                ruolo: 'utente'
+                password: 'Prova123_'
             };
         
             await expect(
                 GestioneUtenteDAO.registerUser(incompleteData)
-            ).rejects.toThrow('Errore durante la registrazione dell\'utente');
+            ).rejects.toThrow('Tutti i campi obbligatori devono essere forniti.');
+        });
+    });
+
+//------------------------------------------searchByName-------------------------------------------------------------------------
+
+    describe('searchByName', () => {
+        test('should find users by name (case 1)', async () => {
+            await Utente.create({ nome: 'Mario', cognome: 'Rossi', email: 'mario.rossi@example.com', password: 'Password123', ruolo: 'utente' });
+            await Utente.create({ nome: 'Maria', cognome: 'Verdi', email: 'maria.verdi@example.com', password: 'Password123', ruolo: 'utente' });
+
+            const result = await GestioneUtenteDAO.searchByName('Mario', null);
+
+            expect(result).toHaveLength(1);
+            expect(result[0].nome).toBe('Mario');
+            expect(result[0].cognome).toBe('Rossi');
+        });
+
+        test('should find users by name (case 2)', async () => {
+            await Utente.create({ nome: 'Luca', cognome: 'Bianchi', email: 'luca.bianchi@example.com', password: 'Password123', ruolo: 'utente' });
+            await Utente.create({ nome: 'Lucia', cognome: 'Neri', email: 'lucia.neri@example.com', password: 'Password123', ruolo: 'utente' });
+
+            const result = await GestioneUtenteDAO.searchByName('Luca', null);
+
+            expect(result).toHaveLength(1);
+            expect(result[0].nome).toBe('Luca');
+            expect(result[0].cognome).toBe('Bianchi');
+        });
+
+        test('should find users by name (case 3)', async () => {
+            await Utente.create({ nome: 'Giovanni', cognome: 'Rossi', email: 'giovanni.rossi@example.com', password: 'Password123', ruolo: 'utente' });
+            await Utente.create({ nome: 'Giovanna', cognome: 'Rossi', email: 'giovanna.rossi@example.com', password: 'Password123', ruolo: 'utente' });
+
+            const result = await GestioneUtenteDAO.searchByName('Giovanni', null);
+
+            expect(result).toHaveLength(1);
+            expect(result[0].nome).toBe('Giovanni');
+            expect(result[0].cognome).toBe('Rossi');
+        });
+
+        test('should find users by surname (case 1)', async () => {
+            await Utente.create({ nome: 'Mario', cognome: 'Rossi', email: 'mario.rossi@example.com', password: 'Password123', ruolo: 'utente' });
+            await Utente.create({ nome: 'Maria', cognome: 'Verdi', email: 'maria.verdi@example.com', password: 'Password123', ruolo: 'utente' });
+
+            const result = await GestioneUtenteDAO.searchByName(null, 'Rossi');
+
+            expect(result).toHaveLength(1);
+            expect(result[0].nome).toBe('Mario');
+            expect(result[0].cognome).toBe('Rossi');
+        });
+
+        test('should find users by surname (case 2)', async () => {
+            await Utente.create({ nome: 'Luca', cognome: 'Bianchi', email: 'luca.bianchi@example.com', password: 'Password123', ruolo: 'utente' });
+            await Utente.create({ nome: 'Lucia', cognome: 'Neri', email: 'lucia.neri@example.com', password: 'Password123', ruolo: 'utente' });
+
+            const result = await GestioneUtenteDAO.searchByName(null, 'Bianchi');
+
+            expect(result).toHaveLength(1);
+            expect(result[0].nome).toBe('Luca');
+            expect(result[0].cognome).toBe('Bianchi');
+        });
+
+        test('should find users by surname (case 3)', async () => {
+            await Utente.create({ nome: 'Giovanni', cognome: 'Rossi', email: 'giovanni.rossi@example.com', password: 'Password123', ruolo: 'utente' });
+            await Utente.create({ nome: 'Giovanna', cognome: 'Rossi', email: 'giovanna.rossi@example.com', password: 'Password123', ruolo: 'utente' });
+
+            const result = await GestioneUtenteDAO.searchByName(null, 'Rossi');
+
+            expect(result).toHaveLength(2);
+            expect(result[0].nome).toBe('Giovanni');
+            expect(result[0].cognome).toBe('Rossi');
+            expect(result[1].nome).toBe('Giovanna');
+            expect(result[1].cognome).toBe('Rossi');
+        });
+
+        test('should find users by name and surname (case 1)', async () => {
+            await Utente.create({ nome: 'Mario', cognome: 'Rossi', email: 'mario.rossi@example.com', password: 'Password123', ruolo: 'utente' });
+            await Utente.create({ nome: 'Maria', cognome: 'Verdi', email: 'maria.verdi@example.com', password: 'Password123', ruolo: 'utente' });
+
+            const result = await GestioneUtenteDAO.searchByName('Mario', 'Rossi');
+
+            expect(result).toHaveLength(1);
+            expect(result[0].nome).toBe('Mario');
+            expect(result[0].cognome).toBe('Rossi');
+        });
+
+        test('should find users by name and surname (case 2)', async () => {
+            await Utente.create({ nome: 'Luca', cognome: 'Bianchi', email: 'luca.bianchi@example.com', password: 'Password123', ruolo: 'utente' });
+            await Utente.create({ nome: 'Lucia', cognome: 'Neri', email: 'lucia.neri@example.com', password: 'Password123', ruolo: 'utente' });
+
+            const result = await GestioneUtenteDAO.searchByName('Luca', 'Bianchi');
+
+            expect(result).toHaveLength(1);
+            expect(result[0].nome).toBe('Luca');
+            expect(result[0].cognome).toBe('Bianchi');
+        });
+
+        test('should find users by name and surname (case 3)', async () => {
+            await Utente.create({ nome: 'Giovanni', cognome: 'Rossi', email: 'giovanni.rossi@example.com', password: 'Password123', ruolo: 'utente' });
+            await Utente.create({ nome: 'Giovanna', cognome: 'Rossi', email: 'giovanna.rossi@example.com', password: 'Password123', ruolo: 'utente' });
+
+            const result = await GestioneUtenteDAO.searchByName('Giovanni', 'Rossi');
+
+            expect(result).toHaveLength(1);
+            expect(result[0].nome).toBe('Giovanni');
+            expect(result[0].cognome).toBe('Rossi');
         });
     });
 });

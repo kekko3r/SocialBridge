@@ -13,6 +13,9 @@ router
     // POST crea un nuovo evento
     .post('/create', checkJwt(100, 0), eventController.createEvent)
 
+    // PATCH rimuove un partecipante da un evento
+    .patch('/removeParticipant/:eventID/:userID', checkJwt(100, 0), eventController.removeParticipant)
+
     // PATCH aggiorna un evento
     .patch('/update/:id', checkJwt(100, 0), eventController.updateEvent)
 
@@ -22,7 +25,13 @@ router
     // POST registra un utente a un evento
     .post('/register/:eventID/:userID', checkJwt(100, 0), eventController.registerToEvent)
 
+    // GET ottiene partecipanti di un evento
+    .get('/participants/:eventID', eventController.getEventParticipants)
+
     // GET cerca eventi con filtri
-    .get('/search', checkJwt(100, 0), eventController.searchEvents);
+    .get('/search', eventController.searchEvents)
+
+    // GET ottiene tutti gli eventi
+    .get('/events', eventController.getAllEvents);
 
 module.exports = router; // Esporta le rotte altrimenti non possono essere viste

@@ -3,26 +3,26 @@ const Utente = require('../database/models/GestioneUtenteModel'); // Modello per
 const bcrypt = require('bcrypt');
 
 const GestioneUtenteDAO = {
-    async registerUser({ email, password, nome, cognome, ruolo }) { // Registra un nuovo utente
+    async registerUser({ email, password, nome, cognome }) {
         try {
             // Controlla se tutti i campi obbligatori sono forniti
-            if (!email || !password || !nome || !cognome || !ruolo) {
+            if (!email || !password || !nome || !cognome) {
                 throw new Error('Tutti i campi obbligatori devono essere forniti.');
             }
-    
+
             // Controlla se l'email esiste già
             const existingUser = await Utente.findOne({ email });
             if (existingUser) {
                 throw new Error('Errore durante la registrazione dell\'utente: email già esistente');
             }
-    
+
             // Crea un nuovo utente
             const hashedPassword = await bcrypt.hash(password, 10);
-            const nuovoUtente = new Utente({ email, password: hashedPassword, nome, cognome, ruolo });
+            const nuovoUtente = new Utente({ email, password: hashedPassword, nome, cognome });
             return await nuovoUtente.save();
         } catch (error) {
             console.error('Errore durante la registrazione dell\'utente:', error.message);
-            throw new Error('Errore durante la registrazione dell\'utente: email già esistente');
+            throw new Error(error.message);
         }
     },
 
@@ -45,15 +45,13 @@ const GestioneUtenteDAO = {
         }
     },
 
-    async updateProfile(userID, { email, password, nome, cognome, ruolo, interessi }) { // Aggiorna il profilo di un utente
+    async updateProfile(userID, { email, password, nome, cognome }) {
         try {
             const updateData = {};
             if (email) updateData.email = email;
             if (password) updateData.password = await bcrypt.hash(password, 10);
             if (nome) updateData.nome = nome;
             if (cognome) updateData.cognome = cognome;
-            if (ruolo) updateData.ruolo = ruolo;
-            if (interessi) updateData.interessi = interessi;
 
             return await Utente.findByIdAndUpdate(userID, updateData, { new: true });
         } catch (error) {
@@ -84,6 +82,23 @@ const GestioneUtenteDAO = {
         } catch (error) {
             console.error('Errore durante il recupero dell\'utente:', error.message);
             throw new Error('Errore durante il recupero dell\'utente');
+        }
+    },
+
+    async searchByName(nome, cognome) {
+        try {
+            const query = {};
+            if (nome) {
+                query.nome = { $regex: `^${nome}`, $options: 'i' }; // Case-insensitive regex per nome
+            }
+            if (cognome) {
+                query.cognome = { $regex: `^${cognome}`, $options: 'i' }; // Case-insensitive regex per cognome
+            }
+            const utenti = await Utente.find(query);
+            return utenti;
+        } catch (error) {
+            console.error('Errore durante la ricerca di un utente:', error.message);
+            throw new Error('Errore durante la ricerca dell\'utente');
         }
     }
 };

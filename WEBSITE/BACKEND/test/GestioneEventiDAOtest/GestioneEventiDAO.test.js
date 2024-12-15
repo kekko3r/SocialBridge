@@ -263,7 +263,7 @@ describe('registerToEvent', () => {
 
         const userID = new mongoose.Types.ObjectId();
 
-        await expect(GestioneEventiDAO.registerToEvent(evento._id, userID)).rejects.toThrow("L'evento è pieno o non esiste.");
+        await expect(GestioneEventiDAO.registerToEvent(evento._id, userID)).rejects.toThrow("L'evento è pieno.");
     });
 
     test('should throw an error if event is full (case 2)', async () => {
@@ -282,7 +282,7 @@ describe('registerToEvent', () => {
 
         const userID = new mongoose.Types.ObjectId();
 
-        await expect(GestioneEventiDAO.registerToEvent(evento._id, userID)).rejects.toThrow("L'evento è pieno o non esiste.");
+        await expect(GestioneEventiDAO.registerToEvent(evento._id, userID)).rejects.toThrow("L'evento è pieno.");
     });
 
     test('should throw an error if event is full (case 3)', async () => {
@@ -301,28 +301,28 @@ describe('registerToEvent', () => {
 
         const userID = new mongoose.Types.ObjectId();
 
-        await expect(GestioneEventiDAO.registerToEvent(evento._id, userID)).rejects.toThrow("L'evento è pieno o non esiste.");
+        await expect(GestioneEventiDAO.registerToEvent(evento._id, userID)).rejects.toThrow("L'evento è pieno.");
     });
 
     test('should throw an error if event does not exist (case 1)', async () => {
         const nonExistingEventID = new mongoose.Types.ObjectId();
         const userID = new mongoose.Types.ObjectId();
 
-        await expect(GestioneEventiDAO.registerToEvent(nonExistingEventID, userID)).rejects.toThrow("L'evento è pieno o non esiste.");
+        await expect(GestioneEventiDAO.registerToEvent(nonExistingEventID, userID)).rejects.toThrow("L'evento non esiste.");
     });
 
     test('should throw an error if event does not exist (case 2)', async () => {
         const nonExistingEventID = new mongoose.Types.ObjectId();
         const userID = new mongoose.Types.ObjectId();
 
-        await expect(GestioneEventiDAO.registerToEvent(nonExistingEventID, userID)).rejects.toThrow("L'evento è pieno o non esiste.");
+        await expect(GestioneEventiDAO.registerToEvent(nonExistingEventID, userID)).rejects.toThrow("L'evento non esiste.");
     });
 
     test('should throw an error if event does not exist (case 3)', async () => {
         const nonExistingEventID = new mongoose.Types.ObjectId();
         const userID = new mongoose.Types.ObjectId();
 
-        await expect(GestioneEventiDAO.registerToEvent(nonExistingEventID, userID)).rejects.toThrow("L'evento è pieno o non esiste.");
+        await expect(GestioneEventiDAO.registerToEvent(nonExistingEventID, userID)).rejects.toThrow("L'evento non esiste.");
     });
 });
 
@@ -677,6 +677,180 @@ describe('deleteEvent', () => {
         const invalidEventID = 'invalid-id';
 
         await expect(GestioneEventiDAO.deleteEvent(invalidEventID)).rejects.toThrow();
+    });
+});
+//------------------------------------------removeParticipant-------------------------------------------------------------------------
+
+describe('removeParticipant', () => {
+    test('should remove a participant from an event (case 1)', async () => {
+        const userID1 = new mongoose.Types.ObjectId();
+        const userID2 = new mongoose.Types.ObjectId();
+        const evento = await Evento.create({
+            titolo: 'Evento Test 1',
+            descrizione: 'Descrizione di prova 1',
+            data: new Date('2024-12-31'),
+            ora: '18:00',
+            luogo: 'Roma',
+            accessibilita: 'Accessibile',
+            partecipantiMAX: 100,
+            organizzatoreID: new mongoose.Types.ObjectId(),
+            partecipanti: [userID1, userID2],
+            pieno: true,
+        });
+
+        const eventoAggiornato = await GestioneEventiDAO.removeParticipant(evento._id, userID1);
+
+        // Verifica che il partecipante sia stato rimosso
+        expect(eventoAggiornato.partecipanti.map(p => p.toString())).not.toContain(userID1.toString());
+        // Verifica che l'evento non sia più pieno
+        expect(eventoAggiornato.pieno).toBe(false);
+    });
+
+    test('should remove a participant from an event (case 2)', async () => {
+        const userID1 = new mongoose.Types.ObjectId();
+        const userID2 = new mongoose.Types.ObjectId();
+        const evento = await Evento.create({
+            titolo: 'Evento Test 2',
+            descrizione: 'Descrizione di prova 2',
+            data: new Date('2024-12-31'),
+            ora: '18:00',
+            luogo: 'Milano',
+            accessibilita: 'Non accessibile',
+            partecipantiMAX: 50,
+            organizzatoreID: new mongoose.Types.ObjectId(),
+            partecipanti: [userID1, userID2],
+            pieno: true,
+        });
+
+        const eventoAggiornato = await GestioneEventiDAO.removeParticipant(evento._id, userID2);
+
+        // Verifica che il partecipante sia stato rimosso
+        expect(eventoAggiornato.partecipanti.map(p => p.toString())).not.toContain(userID2.toString());
+        // Verifica che l'evento non sia più pieno
+        expect(eventoAggiornato.pieno).toBe(false);
+    });
+
+    test('should remove a participant from an event (case 3)', async () => {
+        const userID1 = new mongoose.Types.ObjectId();
+        const userID2 = new mongoose.Types.ObjectId();
+        const evento = await Evento.create({
+            titolo: 'Evento Test 3',
+            descrizione: 'Descrizione di prova 3',
+            data: new Date('2024-12-31'),
+            ora: '18:00',
+            luogo: 'Napoli',
+            accessibilita: 'Accessibile',
+            partecipantiMAX: 200,
+            organizzatoreID: new mongoose.Types.ObjectId(),
+            partecipanti: [userID1, userID2],
+            pieno: true,
+        });
+
+        const eventoAggiornato = await GestioneEventiDAO.removeParticipant(evento._id, userID1);
+
+        // Verifica che il partecipante sia stato rimosso
+        expect(eventoAggiornato.partecipanti.map(p => p.toString())).not.toContain(userID1.toString());
+        // Verifica che l'evento non sia più pieno
+        expect(eventoAggiornato.pieno).toBe(false);
+    });
+
+    test('should throw an error if event ID is invalid (case 1)', async () => {
+        const invalidEventID = 'invalid-id';
+        const userID = new mongoose.Types.ObjectId();
+
+        await expect(GestioneEventiDAO.removeParticipant(invalidEventID, userID)).rejects.toThrow('L\'ID dell\'evento non è valido.');
+    });
+
+    test('should throw an error if event ID is invalid (case 2)', async () => {
+        const invalidEventID = '12345';
+        const userID = new mongoose.Types.ObjectId();
+
+        await expect(GestioneEventiDAO.removeParticipant(invalidEventID, userID)).rejects.toThrow('L\'ID dell\'evento non è valido.');
+    });
+
+    test('should throw an error if event ID is invalid (case 3)', async () => {
+        const invalidEventID = '';
+        const userID = new mongoose.Types.ObjectId();
+
+        await expect(GestioneEventiDAO.removeParticipant(invalidEventID, userID)).rejects.toThrow('L\'ID dell\'evento non è valido.');
+    });
+
+    test('should throw an error if user ID is invalid (case 1)', async () => {
+        const evento = await Evento.create({
+            titolo: 'Evento Test 1',
+            descrizione: 'Descrizione di prova 1',
+            data: new Date('2024-12-31'),
+            ora: '18:00',
+            luogo: 'Roma',
+            accessibilita: 'Accessibile',
+            partecipantiMAX: 100,
+            organizzatoreID: new mongoose.Types.ObjectId(),
+            partecipanti: [new mongoose.Types.ObjectId(), new mongoose.Types.ObjectId()],
+            pieno: true,
+        });
+
+        const invalidUserID = 'invalid-id';
+
+        await expect(GestioneEventiDAO.removeParticipant(evento._id, invalidUserID)).rejects.toThrow('L\'ID dell\'utente non è valido.');
+    });
+
+    test('should throw an error if user ID is invalid (case 2)', async () => {
+        const evento = await Evento.create({
+            titolo: 'Evento Test 2',
+            descrizione: 'Descrizione di prova 2',
+            data: new Date('2024-12-31'),
+            ora: '18:00',
+            luogo: 'Milano',
+            accessibilita: 'Non accessibile',
+            partecipantiMAX: 50,
+            organizzatoreID: new mongoose.Types.ObjectId(),
+            partecipanti: [new mongoose.Types.ObjectId(), new mongoose.Types.ObjectId()],
+            pieno: true,
+        });
+
+        const invalidUserID = '12345';
+
+        await expect(GestioneEventiDAO.removeParticipant(evento._id, invalidUserID)).rejects.toThrow('L\'ID dell\'utente non è valido.');
+    });
+
+    test('should throw an error if user ID is invalid (case 3)', async () => {
+        const evento = await Evento.create({
+            titolo: 'Evento Test 3',
+            descrizione: 'Descrizione di prova 3',
+            data: new Date('2024-12-31'),
+            ora: '18:00',
+            luogo: 'Napoli',
+            accessibilita: 'Accessibile',
+            partecipantiMAX: 200,
+            organizzatoreID: new mongoose.Types.ObjectId(),
+            partecipanti: [new mongoose.Types.ObjectId(), new mongoose.Types.ObjectId()],
+            pieno: true,
+        });
+
+        const invalidUserID = '';
+
+        await expect(GestioneEventiDAO.removeParticipant(evento._id, invalidUserID)).rejects.toThrow('L\'ID dell\'utente non è valido.');
+    });
+
+    test('should throw an error if event does not exist (case 1)', async () => {
+        const nonExistingEventID = new mongoose.Types.ObjectId();
+        const userID = new mongoose.Types.ObjectId();
+
+        await expect(GestioneEventiDAO.removeParticipant(nonExistingEventID, userID)).rejects.toThrow('Evento non trovato.');
+    });
+
+    test('should throw an error if event does not exist (case 2)', async () => {
+        const nonExistingEventID = new mongoose.Types.ObjectId();
+        const userID = new mongoose.Types.ObjectId();
+
+        await expect(GestioneEventiDAO.removeParticipant(nonExistingEventID, userID)).rejects.toThrow('Evento non trovato.');
+    });
+
+    test('should throw an error if event does not exist (case 3)', async () => {
+        const nonExistingEventID = new mongoose.Types.ObjectId();
+        const userID = new mongoose.Types.ObjectId();
+
+        await expect(GestioneEventiDAO.removeParticipant(nonExistingEventID, userID)).rejects.toThrow('Evento non trovato.');
     });
 });
 });

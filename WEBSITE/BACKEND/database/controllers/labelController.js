@@ -1,4 +1,4 @@
-const labelDAO = require('../database/models/labelDAO');
+const labelDAO = require('../../libs/labelDAO');
 
 const labelController = {
     async getAll(req, res) {

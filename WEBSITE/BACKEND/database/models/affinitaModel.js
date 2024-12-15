@@ -1,34 +1,33 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-if (process.env.NODE_ENV !== 'test')
-    {
-        const db = require('../conn');
-    } 
-
 const affinitaSchema = new Schema({
-    utente1ID: {
-        type: Schema.Types.ObjectId,
-        ref: 'Utente',
-        required: true
+    user: { 
+        type: Schema.Types.ObjectId, 
+        ref: 'Utente', 
+        required: true 
     },
-    utente2ID: {
+    participantID: {
         type: Schema.Types.ObjectId,
-        ref: 'Utente',
-        required: true
+        ref: 'Utente', 
+        required: true 
     },
-    punteggio: {
+    rating: {
         type: Number,
-        required: true
+        min: 0.5,
+        max: 5 
+    },
+    comment: {
+        type: String 
     },
     dataCreazione: {
         type: Date,
-        default: Date.now
+        default: Date.now 
     }
 });
 
 // Aggiunta di un indice combinato per migliorare le prestazioni nelle query
-affinitaSchema.index({ utente1ID: 1, utente2ID: 1 }, { unique: true });
+affinitaSchema.index({ user: 1, participantID: 1 }, { unique: true });
 
 const Affinita = mongoose.model('Affinita', affinitaSchema);
 module.exports = Affinita;

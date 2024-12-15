@@ -1,9 +1,9 @@
-const gestioneAssistenzaUtenteDAO = require('../database/models/GestioneAssistenzaUtenteDAO');
+const estioneAssistenzaUtenteDAO = require('../../libs/GestioneAssistenzaUtenteDAO');
 
 const GestioneAssistenzaUtenteController = {
     async create(req, res) {
         try {
-            const assistenza = await gestioneAssistenzaUtenteDAO.submitSupportRequest(req.body);
+            const assistenza = await GestioneAssistenzaUtenteDAO.submitSupportRequest(req.body);
             res.status(201).json(assistenza);
         } catch (err) {
             res.status(400).json({ message: err.message });
@@ -12,7 +12,7 @@ const GestioneAssistenzaUtenteController = {
 
     async getById(req, res) {
         try {
-            const assistenza = await gestioneAssistenzaUtenteDAO.getSupportRequests(req.params.id);
+            const assistenza = await GestioneAssistenzaUtenteDAO.getSupportRequests(req.params.id);
             if (!assistenza) {
                 return res.status(404).json({ message: 'Assistenza utente non disponibile' });
             }
@@ -24,7 +24,7 @@ const GestioneAssistenzaUtenteController = {
 
     async update(req, res) {
         try {
-            const assistenza = await gestioneAssistenzaUtenteDAO.resolveSupportRequest(req.params.id, req.body.status);
+            const assistenza = await GestioneAssistenzaUtenteDAO.resolveSupportRequest(req.params.id, req.body.status);
             if (!assistenza) {
                 return res.status(404).json({ message: 'Richiesta di assistenza non trovata' });
             }
@@ -36,7 +36,7 @@ const GestioneAssistenzaUtenteController = {
 
     async delete(req, res) {
         try {
-            const assistenza = await gestioneAssistenzaUtenteDAO.deleteSupportRequest(req.params.id);
+            const assistenza = await GestioneAssistenzaUtenteDAO.deleteSupportRequest(req.params.id);
             if (!assistenza) {
                 return res.status(404).json({ message: 'Richiesta di assistenza non trovata' });
             }

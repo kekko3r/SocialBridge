@@ -1,99 +1,56 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const Affinita = require('../database/models/affinitaModel');
+const { loginUser } = require('./GestioneUtenteDAO');
 
 const affinitaDAO = {
-    async createAffinita(affinita) { //crea una nuova affinità nel database
+    // Crea una nuova affinità (valutazione) nel database
+    async createAffinita(affinitaData) {
+        console.log("dentro dao AFFINIAà");
         try {
-            if (!affinita.utente1ID || !affinita.utente2ID || !affinita.punteggio) {
-                throw new Error("Tutti i campi obbligatori devono essere forniti.");
-            }
-
-            const newAffinita = new Affinita(affinita);
-            const result = await newAffinita.save();
-
-            if (!result) {
-                throw new Error("Impossibile salvare l'affinità.");
-            }
-
-            return result;
+            const newAffinita = new Affinita(affinitaData);
+            const savedAffinita = await newAffinita.save();
+            return savedAffinita;
         } catch (err) {
             throw new Error(`Errore nella creazione dell'affinità: ${err.message}`);
         }
     },
 
-    async findAffinita(utente1ID, utente2ID) { //cerca una affinità tra due utenti
+    // Aggiorna il rating e il commento di un'affinità esistente
+    async updateRatingAndComment(user, participantID, rating, comment) {
+        console.log("dentro dao");
         try {
-            if (!utente1ID || !utente2ID) {
-                throw new Error("Gli ID degli utenti non possono essere nulli.");
-            }
-
-            const affinita = await Affinita.findOne({
-                $or: [
-                    { utente1ID, utente2ID },
-                    { utente1ID: utente2ID, utente2ID: utente1ID }
-                ]
-            }).exec();
-
-            if (!affinita) {
-                throw new Error("Affinità non trovata.");
-            }
-
-            return affinita;
-        } catch (err) {
-            throw new Error(`Errore nella ricerca dell'affinità: ${err.message}`);
-        }
-    },
-
-    async findAffinitaByUtente(utenteID) { //cerca tutte le affinità di un determinato utente
-        try {
-            if (!utenteID) {
-                throw new Error("L'ID dell'utente non può essere nullo.");
-            }
-
-            const affinita = await Affinita.find({
-                $or: [{ utente1ID: utenteID }, { utente2ID: utenteID }]
-            }).exec();
-
-            if (!affinita || affinita.length === 0) {
-                throw new Error("Nessuna affinità trovata per l'utente.");
-            }
-
-            return affinita;
-        } catch (err) {
-            throw new Error(`Errore nella ricerca delle affinità dell'utente: ${err.message}`);
-        }
-    },
-
-    async updatePunteggio(utente1ID, utente2ID, nuovoPunteggio) { //aggiorna il punteggio di un'affinità tra due utenti specificati 
-        try {
-            if (!utente1ID || !utente2ID || !nuovoPunteggio) {
-                throw new Error("Tutti i campi obbligatori devono essere forniti.");
-            }
-
+            console.log("dentro dao try");
             const updatedAffinita = await Affinita.findOneAndUpdate(
-                { utente1ID, utente2ID },
-                { punteggio: nuovoPunteggio },
+                { user, participantID },
+                { rating, comment },
                 { new: true }
             ).exec();
 
             if (!updatedAffinita) {
-                throw new Error("Impossibile aggiornare il punteggio dell'affinità.");
+                throw new Error("Impossibile aggiornare il rating e il commento dell'affinità.");
             }
-
+            console.log("dopo if dao");
             return updatedAffinita;
         } catch (err) {
-            throw new Error(`Errore nell'aggiornamento del punteggio: ${err.message}`);
+            throw new Error(`Errore nell'aggiornamento del rating e del commento: ${err.message}`);
         }
     },
 
-    async deleteAffinita(utente1ID, utente2ID) { //elimina le affinità tra due utenti
+    // Recupera tutte le affinità (valutazioni) per un determinato evento
+    async getAffinitaByEvent(eventId) {
         try {
-            if (!utente1ID || !utente2ID) {
-                throw new Error("Gli ID degli utenti non possono essere nulli.");
-            }
+            const affinita = await Affinita.find({ eventId }).exec();
+            return affinita;
+        } catch (err) {
+            throw new Error(`Errore nel recupero delle affinità: ${err.message}`);
+        }
+    },
 
-            const deletedAffinita = await Affinita.findOneAndDelete({ utente1ID, utente2ID }).exec();
+    // Elimina un'affinità
+    async deleteAffinita(userId, ratedUserId) {
+        try {
+            const deletedAffinita = await Affinita.findOneAndDelete({ user: userId, participantID: ratedUserId }).exec();
 
             if (!deletedAffinita) {
                 throw new Error("Impossibile eliminare l'affinità.");
@@ -102,6 +59,21 @@ const affinitaDAO = {
             return deletedAffinita;
         } catch (err) {
             throw new Error(`Errore nell'eliminazione dell'affinità: ${err.message}`);
+        }
+    },
+
+    // Recupera tutte le affinità fatte da un utente
+    async getAffinitaByUser(userId) {
+        try {
+            const affinita = await Affinita.find({ user: userId }).exec();
+
+            if (!affinita || affinita.length === 0) {
+                throw new Error("Nessuna affinità trovata per l'utente.");
+            }
+
+            return affinita;
+        } catch (err) {
+            throw new Error(`Errore nella ricerca delle affinità dell'utente: ${err.message}`);
         }
     }
 };

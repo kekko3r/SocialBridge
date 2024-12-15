@@ -1,4 +1,4 @@
-const eventDAO = require('../database/models/GestioneEventiDAO');
+const eventDAO = require('../../libs/GestioneEventiDAO');
 
 const GestioneEventiController = {
     async getEventDetails(req, res) {
@@ -46,6 +46,26 @@ const GestioneEventiController = {
         }
     },
 
+    async removeParticipant(req, res) {
+        const { eventID, userID } = req.params;
+        try {
+            const updatedEvent = await eventDAO.removeParticipant(eventID, userID);
+            res.status(200).json(updatedEvent);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+
+    async getEventParticipants(req, res) {
+        try {
+            console.log(`Verifica dell'ID evento: ${req.params.eventID}`); // Debug log
+            const partecipanti = await eventDAO.getEventParticipants(req.params.eventID);
+            res.json(partecipanti);
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    },
+    
     async registerToEvent(req, res) {
         try {
             const event = await eventDAO.registerToEvent(req.params.eventID, req.params.userID);
@@ -58,6 +78,15 @@ const GestioneEventiController = {
     async searchEvents(req, res) {
         try {
             const events = await eventDAO.searchEvents(req.query);
+            res.json(events);
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    },
+
+    async getAllEvents(req, res) {
+        try {
+            const events = await eventDAO.getAllEvents();
             res.json(events);
         } catch (err) {
             res.status(500).json({ message: err.message });

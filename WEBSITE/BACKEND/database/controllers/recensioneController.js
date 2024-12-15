@@ -1,4 +1,4 @@
-const recensioneDAO = require('../libs/recensioneDAO');
+const recensioneDAO = require('../../libs/recensioneDAO');
 
 const recensioneController = {
     async getAll(req, res) {

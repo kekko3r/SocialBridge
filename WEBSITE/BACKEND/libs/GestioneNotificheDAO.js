@@ -97,16 +97,6 @@ const GestioneNotificheDAO = {
             throw error;
         }
     },
-
-    // Recupera tutte le notifiche
-    async findAll() {
-        try {
-            return await Notifiche.find().lean();
-        } catch (error) {
-            console.error('Errore durante il recupero delle notifiche:', error.message);
-            throw new Error('Errore nel recupero delle notifiche');
-        }
-    }
 };
 
 module.exports = GestioneNotificheDAO;
