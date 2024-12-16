@@ -37,12 +37,12 @@ function App() {
 
             <Route
               path="/login"
-              element={<Login />}
+              element={isAuthenticated ? <Navigate to="/" /> : <Login />}
             />
 
             <Route
               path="/register"
-              element={<Register />}
+              element={isAuthenticated ? <Navigate to="/" /> : <Register />}
             />
 
             <Route
