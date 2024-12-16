@@ -85,19 +85,35 @@ const EventiPrenotati = () => {
                                 {evento.organizzatoreID._id === jwtDecode(localStorage.getItem('jwtToken')).userId ? (
                                     <div>
                                         <p><b>Sei l'organizzatore di questo evento.</b></p>
-                                        <button
-                                            onClick={vaiAllaPaginaEventiCreati}
-                                        >
+                                        <div style={{ display: 'flex', gap: '10px' }}>
+                                            <button
+                                                onClick={vaiAllaPaginaEventiCreati}
+                                            >
                                             Vai alla pagina eventi creati
                                         </button>
+                                        <button
+                                            style={{ backgroundColor: "#1e90ff", color: 'white' }}
+                                            onClick={() => window.location.href = `/participants/${evento._id}`}
+                                        >
+                                            Lista Partecipanti
+                                        </button>
+                                        </div>
                                     </div>
                                 ) : (
-                                    <button
-                                        style={{ backgroundColor: 'red', color: 'white' }}
-                                        onClick={() => eliminaPrenotazione(evento._id)}
-                                    >
-                                        Elimina Prenotazione
-                                    </button>
+                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                        <button
+                                            style={{ backgroundColor: "#dc3545", color: 'white' }}
+                                            onClick={() => eliminaPrenotazione(evento._id)}
+                                        >
+                                            Elimina Prenotazione
+                                        </button>
+                                        <button
+                                            style={{ backgroundColor: "#1e90ff", color: 'white' }}
+                                            onClick={() => window.location.href = `/participants/${evento._id}`}
+                                        >
+                                            Lista Partecipanti
+                                        </button>
+                                    </div>
                                 )}
                             </div>
                         ))}
