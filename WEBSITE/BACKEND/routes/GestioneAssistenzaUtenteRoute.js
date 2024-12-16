@@ -8,15 +8,15 @@ router.use(express.json()); // Serve per convertire automaticamente i dati JSON 
 // Rotte protette dal middleware `checkJwt`
 router
     // POST crea una nuova richiesta di assistenza
-    .post('/', checkJwt(100, 0), gestioneAssistenzaUtenteController.create)
+    .post('/', checkJwt(100, 0), GestioneAssistenzaUtenteController.create)
 
     // GET richiesta di assistenza per ID
-    .get('/:id', checkJwt(100, 0), gestioneAssistenzaUtenteController.getById)
+    .get('/:id', checkJwt(100, 0), GestioneAssistenzaUtenteController.getById)
 
     // PATCH aggiorna una richiesta di assistenza
-    .patch('/:id', checkJwt(100, 0), gestioneAssistenzaUtenteController.update)
+    .patch('/:id', checkJwt(100, 0), GestioneAssistenzaUtenteController.update)
 
     // DELETE elimina una richiesta di assistenza
-    .delete('/:id', checkJwt(100, 0), gestioneAssistenzaUtenteController.delete);
+    .delete('/:id', checkJwt(100, 0), GestioneAssistenzaUtenteController.delete);
 
 module.exports = router; // Esporta le rotte altrimenti non possono essere viste

@@ -1,9 +1,17 @@
 require('dotenv').config();
 const express = require('express');
-require('./conn'); // Importa il file di connessione al database
+const cors = require("cors");
+require('./database/conn'); // Importa il file di connessione al database
 
 const app = express();
 const port = process.env.SERVER_PORT || 3000;
+
+//CORS
+app.use(cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+    credentials: true
+}));
 
 // Middleware globale per logging delle richieste
 app.use((req, res, next) => {
@@ -29,15 +37,16 @@ const routes = {
     assistance: require('./routes/GestioneAssistenzaUtenteRoute') // Gestione dell'assistenza
 };
 
+
 // Montaggio dei router
-app.use('/users', routes.user);
-app.use('/events', routes.event);
-app.use('/messages', routes.message);
-app.use('/labels', routes.label);
-app.use('/affinities', routes.affinity);
-app.use('/reviews', routes.review);
-app.use('/notifications', routes.notification);
-app.use('/assistances', routes.assistance);
+app.use('/api/users', routes.user);
+app.use('/api/events', routes.event);
+app.use('/api/messages', routes.message);
+app.use('/api/labels', routes.label);
+app.use('/api/affinities', routes.affinity);
+app.use('/api/reviews', routes.review);
+app.use('/api/notifications', routes.notification);
+app.use('/api/assistances', routes.assistance);
 
 // Rotta base per test
 app.get('/', (req, res) => {

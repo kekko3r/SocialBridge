@@ -1,88 +1,91 @@
-const affinitaDAO = require('../database/libs/affinitaDAO');
+const affinitaDAO = require('../../libs/affinitaDAO');
 
 const GestioneAffinitaController = {
-    // Crea una nuova affinità
     async createAffinita(req, res) {
-        const { utente1ID, utente2ID, punteggio } = req.body;
+        const { user, participantID, rating, comment } = req.body;
 
-        if (!utente1ID || !utente2ID || punteggio === undefined) {
-            return res.status(400).json({ message: "Tutti i campi obbligatori devono essere forniti (utente1ID, utente2ID, punteggio)." });
+        console.log("dopo req.body");
+        console.log("user:", user);
+        console.log("PartecipantId:", participantID);
+        console.log("rating:", rating);
+        console.log("comment:", comment);
+
+        if (!user || !participantID || rating === undefined) {
+            return res.status(400).json({ message: "Tutti i campi obbligatori devono essere forniti (userId, ratedUserId, eventId, rating)." });
         }
 
         try {
-            const result = await affinitaDAO.createAffinita({ utente1ID, utente2ID, punteggio });
-            res.status(201).json(result);
+            console.log("Mannaggia a shrek");
+            const newAffinita = await affinitaDAO.createAffinita({ user, participantID, rating, comment });
+            console.log("Bravo a shrek");
+            res.status(201).json(newAffinita);
         } catch (err) {
             console.error(`Errore durante la creazione dell'affinità: ${err.message}`);
             res.status(500).json({ message: "Errore durante la creazione dell'affinità." });
         }
     },
 
-    // Trova un'affinità tra due utenti
-    async findAffinita(req, res) {
-        const { utente1ID, utente2ID } = req.query;
+    async updateRatingAndComment(req, res) {
 
-        if (!utente1ID || !utente2ID) {
-            return res.status(400).json({ message: "Gli ID degli utenti non possono essere nulli." });
+        console.log(req.body);
+
+        const { user, participantID, rating, comment } = req.body;
+
+        console.log("dopo req.body");
+        console.log("userId:", user);
+        console.log("ratedUserId:", participantID);
+        console.log("rating:", rating);
+        console.log("comment:", comment);
+
+
+
+       
+
+        if (!user || !participantID || rating === undefined) {
+            return res.status(400).json({ message: "Tutti i campi obbligatori devono essere forniti (userId, ratedUserId, rating)." });
         }
 
+        console.log("dopo if");
+
         try {
-            const result = await affinitaDAO.findAffinita(utente1ID, utente2ID);
-            res.status(200).json(result);
+            console.log("dentro try");
+            const updatedAffinita = await affinitaDAO.updateRatingAndComment(user, participantID, rating, comment);
+            res.status(200).json(updatedAffinita);
         } catch (err) {
-            console.error(`Errore durante la ricerca dell'affinità: ${err.message}`);
-            res.status(500).json({ message: "Errore durante la ricerca dell'affinità." });
+            console.error(`Errore durante l'aggiornamento del rating e del commento: ${err.message}`);
+            res.status(500).json({ message: "Errore durante l'aggiornamento del rating e del commento." });
         }
     },
 
-    // Trova tutte le affinità di un utente
-    async findAffinitaByUtente(req, res) {
-        const { utenteID } = req.query;
+    async deleteAffinita(req, res) {
+        const { userId, ratedUserId, eventId } = req.body;
 
-        if (!utenteID) {
+        if (!userId || !ratedUserId || !eventId) {
+            return res.status(400).json({ message: "Tutti i campi obbligatori devono essere forniti (userId, ratedUserId, eventId)." });
+        }
+
+        try {
+            const deletedAffinita = await affinitaDAO.deleteAffinita(userId, ratedUserId, eventId);
+            res.status(200).json({ message: "Affinità eliminata con successo.", deletedAffinita });
+        } catch (err) {
+            console.error(`Errore durante l'eliminazione dell'affinità: ${err.message}`);
+            res.status(500).json({ message: "Errore durante l'eliminazione dell'affinità." });
+        }
+    },
+
+    async getAffinitaByUser(req, res) {
+        const { userId } = req.params;
+
+        if (!userId) {
             return res.status(400).json({ message: "L'ID dell'utente non può essere nullo." });
         }
 
         try {
-            const result = await affinitaDAO.findAffinitaByUtente(utenteID);
-            res.status(200).json(result);
+            const affinita = await affinitaDAO.getAffinitaByUser(userId);
+            res.status(200).json(affinita);
         } catch (err) {
-            console.error(`Errore durante la ricerca delle affinità: ${err.message}`);
-            res.status(500).json({ message: "Errore durante la ricerca delle affinità." });
-        }
-    },
-
-    // Aggiorna il punteggio di un'affinità
-    async updatePunteggio(req, res) {
-        const { utente1ID, utente2ID, nuovoPunteggio } = req.body;
-
-        if (!utente1ID || !utente2ID || nuovoPunteggio === undefined) {
-            return res.status(400).json({ message: "Tutti i campi obbligatori devono essere forniti (utente1ID, utente2ID, nuovoPunteggio)." });
-        }
-
-        try {
-            const result = await affinitaDAO.updatePunteggio(utente1ID, utente2ID, nuovoPunteggio);
-            res.status(200).json(result);
-        } catch (err) {
-            console.error(`Errore durante l'aggiornamento del punteggio: ${err.message}`);
-            res.status(500).json({ message: "Errore durante l'aggiornamento del punteggio." });
-        }
-    },
-
-    // Elimina un'affinità
-    async deleteAffinita(req, res) {
-        const { utente1ID, utente2ID } = req.body;
-
-        if (!utente1ID || !utente2ID) {
-            return res.status(400).json({ message: "Gli ID degli utenti non possono essere nulli." });
-        }
-
-        try {
-            const result = await affinitaDAO.deleteAffinita(utente1ID, utente2ID);
-            res.status(200).json({ message: "Affinità eliminata con successo.", result });
-        } catch (err) {
-            console.error(`Errore durante l'eliminazione dell'affinità: ${err.message}`);
-            res.status(500).json({ message: "Errore durante l'eliminazione dell'affinità." });
+            console.error(`Errore durante la ricerca delle affinità dell'utente: ${err.message}`);
+            res.status(500).json({ message: "Errore durante la ricerca delle affinità dell'utente." });
         }
     }
 };

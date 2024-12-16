@@ -1,6 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const Evento = require('../database/models/GestioneEventiModel'); // Modello per Evento
+const Evento = require('../database/models/GestioneEventiModel'); // Assicurati che il percorso sia corretto
 const Utente = require('../database/models/GestioneUtenteModel'); // Modello per Utente
 
 const GestioneEventiDAO = {
@@ -51,11 +51,21 @@ const GestioneEventiDAO = {
     async registerToEvent(eventID, userID) {
         try {
             const event = await Evento.findById(eventID);
-            if (!event || event.pieno) {
-                throw new Error("L'evento è pieno o non esiste.");
+            if (!event) {
+                throw new Error("L'evento non esiste.");
+            }
+
+            if (event.pieno) {
+                throw new Error("L'evento è pieno.");
             }
 
             if (!event.partecipanti) event.partecipanti = [];
+
+            // Controlla se l'utente è già registrato all'evento
+            if (event.partecipanti.includes(userID)) {
+                throw new Error("L'utente è già registrato all'evento.");
+            }
+
             event.partecipanti.push(userID);
 
             if (event.partecipanti.length >= event.partecipantiMAX) {
@@ -65,6 +75,36 @@ const GestioneEventiDAO = {
             return await event.save();
         } catch (error) {
             console.error("Errore durante la registrazione all'evento:", error.message);
+            throw error;
+        }
+    },
+
+    // Rimuove un partecipante dall'evento
+    async removeParticipant(eventID, userID) {
+        try {
+            if (!mongoose.Types.ObjectId.isValid(eventID)) {
+                throw new Error("L'ID dell'evento non è valido.");
+            }
+            if (!mongoose.Types.ObjectId.isValid(userID)) {
+                throw new Error("L'ID dell'utente non è valido.");
+            }
+
+            const event = await Evento.findById(eventID);
+            if (!event) {
+                throw new Error("Evento non trovato.");
+            }
+
+            // Rimuovi l'utente dai partecipanti
+            event.partecipanti = event.partecipanti.filter(participant => participant.toString() !== userID.toString());
+
+            // Aggiorna lo stato di "pieno" se necessario
+            if (event.partecipanti.length < event.partecipantiMAX) {
+                event.pieno = false;
+            }
+
+            return await event.save();
+        } catch (error) {
+            console.error("Errore durante la rimozione del partecipante:", error.message);
             throw error;
         }
     },
@@ -102,7 +142,7 @@ const GestioneEventiDAO = {
     },
 
     // Cerca eventi con filtri multipli
-    async searchEvents({ titolo, descrizione, data, ora, luogo, accessibilita, labels }) {
+    async searchEvents({ titolo, descrizione, data, ora, luogo, accessibilita, labels, organizzatoreID, partecipanti }) {
         try {
             const filters = {};
     
@@ -124,6 +164,16 @@ const GestioneEventiDAO = {
             if (labels && Array.isArray(labels) && labels.length > 0) {
                 filters.labels = { $all: labels }; // Tutte le etichette devono essere presenti
             }
+
+            // Filtra per organizzatoreID
+            if (organizzatoreID) {
+                filters.organizzatoreID = organizzatoreID;
+            }
+
+            // Filtra per partecipanti
+            if (partecipanti) {
+                filters.partecipanti = partecipanti;
+            }
     
             console.log("Filtri applicati:", filters); // Log per debug
     
@@ -140,6 +190,16 @@ const GestioneEventiDAO = {
         }
     },
     
+    // Recupera tutti gli eventi
+    async getAllEvents() {
+        try {
+            const events = await Evento.find({});
+            return events;
+        } catch (error) {
+            console.error("Errore durante il recupero di tutti gli eventi:", error.message);
+            throw new Error("Errore nel recupero di tutti gli eventi");
+        }
+    },
 
     // Fornisce i dettagli di un evento cercato dall'ID
     async getEventDetails(eventID) {
@@ -159,6 +219,22 @@ const GestioneEventiDAO = {
         }
     },
 
+    // Recupera i partecipanti di un evento
+    async getEventParticipants(eventID) {
+        try {
+            console.log(`Verifica dell'ID evento: ${eventID}`); // Debug log
+
+            const event = await Evento.findById(eventID).populate('partecipanti');
+            if (!event) {
+                throw new Error("Evento non trovato con l'ID specificato");
+            }
+            return event.partecipanti;
+        } catch (error) {
+            console.error("Errore durante il recupero dei partecipanti dell'evento:", error.message);
+            throw new Error("Errore nel recupero dei partecipanti dell'evento");
+        }
+    },
+
     // Elimina un evento dal database
     async deleteEvent(eventID) {
         try {
@@ -166,11 +242,19 @@ const GestioneEventiDAO = {
                 throw new Error("L'ID dell'evento non è valido.");
             }
     
-            const eventoEliminato = await Evento.findByIdAndDelete(eventID);
+            const evento = await Evento.findById(eventID);
     
-            if (!eventoEliminato) {
+            if (!evento) {
                 return null; // Restituisci null se l'evento non viene trovato
             }
+    
+            // Controlla se la data dell'evento è nel passato
+            const now = new Date();
+            if (new Date(evento.data) < now) {
+                throw new Error("Non è possibile eliminare un evento passato.");
+            }
+    
+            const eventoEliminato = await Evento.findByIdAndDelete(eventID);
     
             return eventoEliminato;
         } catch (error) {

@@ -1,0 +1,82 @@
+.home-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.welcome-section {
+  background-color: #2e8b57;
+  color: white;
+  padding: 50px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.welcome-section h1 {
+  font-size: 2.5em;
+  margin: 0;
+}
+
+.welcome-section p {
+  font-size: 1.2em;
+  margin: 10px 0 0;
+}
+
+.events-section {
+  margin-bottom: 20px;
+}
+
+.events-section h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+.events {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.event-card {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 10px;
+  width: 300px;
+  text-align: left;
+}
+
+.event-card h3 {
+  font-size: 1.5em;
+  margin: 0 0 10px;
+}
+
+.event-card p {
+  font-size: 1em;
+  margin: 0;
+}
+
+.contact-section {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.contact-section h2 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.contact-section p {
+  font-size: 1.2em;
+}
+
+.contact-section a {
+  color: #2e8b57;
+  text-decoration: none;
+}
+
+.contact-section a:hover {
+  text-decoration: underline;
+}

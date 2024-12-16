@@ -1,0 +1,108 @@
+/* Stile generale per il contenitore */
+.user-profile-container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+}
+
+/* Titolo del profilo */
+.user-profile-container h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+/* Sezione dettagli utente */
+.user-profile-details {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #555;
+}
+
+/* Stile per etichette dei dettagli */
+.user-profile-details p {
+  margin: 10px 0;
+}
+
+.user-profile-details p strong {
+  color: #333;
+  font-weight: 600;
+}
+
+/* Pulsante per modificare il profilo */
+.edit-profile-button {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  margin: 15px 0;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-profile-button:hover {
+  background-color: #0056b3;
+}
+
+/* Pulsante logout */
+.logout-button {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  background-color: #dc3545;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #a71d2a;
+}
+
+/* Stile per messaggi di errore */
+.error {
+  color: #ff0000;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* Stile per caricamento */
+.user-profile-container > div {
+  text-align: center;
+  color: #555;
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+/* Media queries per dispositivi più piccoli */
+@media (max-width: 480px) {
+  .user-profile-container {
+    padding: 15px;
+  }
+
+  .edit-profile-button,
+  .logout-button {
+    font-size: 14px;
+  }
+
+  .user-profile-details {
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,90 @@
+/* Centra il form sulla pagina */
+.create-event-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh; /* Altezza totale della viewport */
+    background-color: #f5f5f5; /* Colore di sfondo neutro */
+    padding: 20px; /* Padding per evitare che il form tocchi i bordi su schermi piccoli */
+  }
+  
+  /* Contenitore del form */
+  .create-event-form {
+    background: #ffffff; /* Sfondo bianco */
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Leggera ombra */
+    width: 100%;
+    max-width: 500px; /* Limita la larghezza massima */
+  }
+  
+  /* Titolo del form */
+  .create-event-form h2 {
+    margin: 0 0 20px;
+    font-size: 1.8em;
+    color: #2e8b57; /* Colore verde per il titolo */
+    text-align: center;
+  }
+  
+  /* Stile degli input e textarea */
+  .create-event-form input, .create-event-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    box-sizing: border-box; /* Include padding e bordo nella larghezza */
+    resize: none; /* Impedisce il ridimensionamento dei textarea */
+  }
+  
+  /* Stile del pulsante */
+  .create-event-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #2e8b57; /* Colore verde per il pulsante */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Hover del pulsante */
+  .create-event-form button:hover {
+    background-color: #32cd32; /* Verde più brillante */
+  }
+  
+  /* Testo di errore */
+  .create-event-form .error {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  /* Testo di successo */
+  .create-event-form .success {
+    color: green;
+    font-size: 0.9em;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  /* Media query per schermi piccoli */
+  @media (max-width: 600px) {
+    .create-event-form {
+      padding: 20px;
+    }
+  
+    .create-event-form h2 {
+      font-size: 1.5em;
+    }
+  
+    .create-event-form button {
+      font-size: 1em;
+    }
+  }
+  

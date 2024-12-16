@@ -1,5 +1,5 @@
-const notificheDAO = require('../libs/GestioneNotificheDAO');
-const Utente = require('../database/models/GestioneUtenteModel');
+const notificheDAO = require('../../libs/GestioneNotificheDAO');
+const Utente = require('../models/GestioneUtenteModel');
 const nodemailer = require('nodemailer');
 
 // Configurazione del trasportatore per nodemailer

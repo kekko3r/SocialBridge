@@ -26,7 +26,7 @@ const utenteSchema = new Schema({
     },
     ruolo: {
         type: String,
-        required: true
+        default: 'user'
     }
 });
 
