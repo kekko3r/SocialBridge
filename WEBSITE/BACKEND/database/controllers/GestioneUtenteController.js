@@ -1,4 +1,5 @@
 const userDAO = require('../../libs/GestioneUtenteDAO');
+const notificheDAO = require('../../libs/GestioneNotificheDAO');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
 
@@ -49,6 +50,7 @@ const GestioneUtenteController = {
             if (!utente) {
                 return res.status(404).json({ message: 'Utente non trovato' });
             }
+            await notificheDAO.sendNotificationReal(utente._id, 'Hai modificato il tuo profilo.');
             res.json(utente);
         } catch (err) {
             res.status(400).json({ message: err.message });

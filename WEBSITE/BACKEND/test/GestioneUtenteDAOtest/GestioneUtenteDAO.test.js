@@ -287,21 +287,24 @@ describe('GestioneUtenteDAO', () => {
                 email: 'linobanfi@example.com',
                 password: 'Prova123_'
             });
-
+    
             const updateData = {
                 nome: 'Daniele',
                 cognome: 'De Rossi',
-                email: 'danielederossi@example.com'
+                email: 'danielederossi@example.com',
+                password: 'Prova124_'
             };
-
+    
             const updatedUser = await GestioneUtenteDAO.updateProfile(user1._id, updateData);
-
+    
             expect(updatedUser).toBeTruthy();
             expect(updatedUser.nome).toBe(updateData.nome);
             expect(updatedUser.cognome).toBe(updateData.cognome);
             expect(updatedUser.email).toBe(updateData.email);
+            const passwordMatch = await bcrypt.compare(updateData.password, updatedUser.password);
+            expect(passwordMatch).toBe(true);
         });
-
+    
         test('should update the user profile with valid data (case 2)', async () => {
             const user2 = await Utente.create({
                 nome: 'Carlo',
@@ -309,21 +312,24 @@ describe('GestioneUtenteDAO', () => {
                 email: 'carloverdone@example.com',
                 password: 'Password123'
             });
-
+    
             const updateData = {
                 nome: 'Gianluca',
                 cognome: 'Vialli',
-                email: 'gianlucavialli@example.com'
+                email: 'gianlucavialli@example.com',
+                password: 'Prova124_'
             };
-
+    
             const updatedUser = await GestioneUtenteDAO.updateProfile(user2._id, updateData);
-
+    
             expect(updatedUser).toBeTruthy();
             expect(updatedUser.nome).toBe(updateData.nome);
             expect(updatedUser.cognome).toBe(updateData.cognome);
             expect(updatedUser.email).toBe(updateData.email);
+            const passwordMatch = await bcrypt.compare(updateData.password, updatedUser.password);
+            expect(passwordMatch).toBe(true);
         });
-
+    
         test('should update the user profile with valid data (case 3)', async () => {
             const user3 = await Utente.create({
                 nome: 'Alberto',
@@ -331,19 +337,22 @@ describe('GestioneUtenteDAO', () => {
                 email: 'albertosordi@example.com',
                 password: 'Password456'
             });
-
+    
             const updateData = {
                 nome: 'Francesco',
                 cognome: 'Totti',
-                email: 'francescototti@example.com'
+                email: 'francescototti@example.com',
+                password: 'Prova124_'
             };
-
+    
             const updatedUser = await GestioneUtenteDAO.updateProfile(user3._id, updateData);
-
+    
             expect(updatedUser).toBeTruthy();
             expect(updatedUser.nome).toBe(updateData.nome);
             expect(updatedUser.cognome).toBe(updateData.cognome);
             expect(updatedUser.email).toBe(updateData.email);
+            const passwordMatch = await bcrypt.compare(updateData.password, updatedUser.password);
+            expect(passwordMatch).toBe(true);
         });
 
         test('should not update fields if no valid data is provided (case 1)', async () => {

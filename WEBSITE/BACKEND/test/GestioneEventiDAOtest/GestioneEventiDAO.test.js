@@ -601,7 +601,7 @@ describe('deleteEvent', () => {
         const evento = await Evento.create({
             titolo: 'Evento Test 2',
             descrizione: 'Descrizione di prova 2',
-            data: new Date('2024-11-30'),
+            data: new Date('2024-12-31'),
             ora: '19:00',
             luogo: 'Milano',
             accessibilita: 'Non accessibile',
@@ -621,7 +621,7 @@ describe('deleteEvent', () => {
         const evento = await Evento.create({
             titolo: 'Evento Test 3',
             descrizione: 'Descrizione di prova 3',
-            data: new Date('2024-10-15'),
+            data: new Date('2024-12-31'),
             ora: '20:00',
             luogo: 'Napoli',
             accessibilita: 'Accessibile',
@@ -677,6 +677,59 @@ describe('deleteEvent', () => {
         const invalidEventID = 'invalid-id';
 
         await expect(GestioneEventiDAO.deleteEvent(invalidEventID)).rejects.toThrow();
+    });
+    test('should not delete a past event (case 1)', async () => {
+        const evento = await Evento.create({
+            titolo: 'Evento Passato 1',
+            descrizione: 'Descrizione di prova 1',
+            data: new Date('2020-12-31'), // Data nel passato
+            ora: '18:00',
+            luogo: 'Roma',
+            accessibilita: 'Accessibile',
+            partecipantiMAX: 100,
+            organizzatoreID: new mongoose.Types.ObjectId(),
+        });
+
+        await expect(GestioneEventiDAO.deleteEvent(evento._id)).rejects.toThrow("Non è possibile eliminare un evento passato.");
+
+        const eventoNonCancellato = await Evento.findById(evento._id);
+        expect(eventoNonCancellato).not.toBeNull();
+    });
+
+    test('should not delete a past event (case 2)', async () => {
+        const evento = await Evento.create({
+            titolo: 'Evento Passato 2',
+            descrizione: 'Descrizione di prova 2',
+            data: new Date('2021-11-30'), // Data nel passato
+            ora: '19:00',
+            luogo: 'Milano',
+            accessibilita: 'Non accessibile',
+            partecipantiMAX: 50,
+            organizzatoreID: new mongoose.Types.ObjectId(),
+        });
+
+        await expect(GestioneEventiDAO.deleteEvent(evento._id)).rejects.toThrow("Non è possibile eliminare un evento passato.");
+
+        const eventoNonCancellato = await Evento.findById(evento._id);
+        expect(eventoNonCancellato).not.toBeNull();
+    });
+
+    test('should not delete a past event (case 3)', async () => {
+        const evento = await Evento.create({
+            titolo: 'Evento Passato 3',
+            descrizione: 'Descrizione di prova 3',
+            data: new Date('2019-10-15'), // Data nel passato
+            ora: '20:00',
+            luogo: 'Napoli',
+            accessibilita: 'Accessibile',
+            partecipantiMAX: 200,
+            organizzatoreID: new mongoose.Types.ObjectId(),
+        });
+
+        await expect(GestioneEventiDAO.deleteEvent(evento._id)).rejects.toThrow("Non è possibile eliminare un evento passato.");
+
+        const eventoNonCancellato = await Evento.findById(evento._id);
+        expect(eventoNonCancellato).not.toBeNull();
     });
 });
 //------------------------------------------removeParticipant-------------------------------------------------------------------------

@@ -241,13 +241,21 @@ const GestioneEventiDAO = {
             if (!mongoose.Types.ObjectId.isValid(eventID)) {
                 throw new Error("L'ID dell'evento non è valido.");
             }
-
-            const eventoEliminato = await Evento.findByIdAndDelete(eventID);
-
-            if (!eventoEliminato) {
+    
+            const evento = await Evento.findById(eventID);
+    
+            if (!evento) {
                 return null; // Restituisci null se l'evento non viene trovato
             }
-
+    
+            // Controlla se la data dell'evento è nel passato
+            const now = new Date();
+            if (new Date(evento.data) < now) {
+                throw new Error("Non è possibile eliminare un evento passato.");
+            }
+    
+            const eventoEliminato = await Evento.findByIdAndDelete(eventID);
+    
             return eventoEliminato;
         } catch (error) {
             console.error("Errore durante l'eliminazione dell'evento:", error.message);

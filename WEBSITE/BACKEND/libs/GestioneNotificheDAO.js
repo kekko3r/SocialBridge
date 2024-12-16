@@ -1,7 +1,51 @@
 require('dotenv').config();
+const nodemailer = require('nodemailer');
 const Notifiche = require('../database/models/GestioneNotificheModel');
+const Utente = require('../database/models/GestioneUtenteModel'); // Modello per Utente
+const senderEmail = 'socialbridgenotification@gmail.com';
+const transporterData = {
+    host: 'smtp.gmail.com',
+    port: '465',
+    secure: true,
+    auth: {
+        user: senderEmail,
+        pass: process.env.NOTIFICATION_SERVICE_PASSWORD
+    }
+};
+
 
 const GestioneNotificheDAO = {
+    // Invia una notifica a un utente per davvero
+    async sendNotificationReal(userID, messaggio) {
+        try {
+            
+            // Validazione dei parametri
+            if (!userID || !messaggio) {
+                throw new Error('L\'ID utente e il messaggio sono obbligatori');
+            }
+            const utente = await Utente.findById(userID);
+            if (!utente) {
+                throw new Error('Utente non trovato con l\'ID specificato.');
+            }
+            const transporter = nodemailer.createTransport(transporterData);
+            const mailOptions = {
+                from: senderEmail,
+                to: utente.email,
+                subject: 'Notifica SocialBridge',
+                html: '<p>'+messaggio+'</p>'
+            }
+            transporter.sendMail(mailOptions, (error, info) => {
+                if(error){
+
+                }else{
+                    console.log('Email sent: '+info.response);
+                }
+            });
+        } catch (error) {
+            console.error('Errore durante l\'invio della notifica:', error.message);
+            throw error;
+        }
+    },
     // Invia una notifica a un utente
     async sendNotification(userID, messaggio) {
         try {
