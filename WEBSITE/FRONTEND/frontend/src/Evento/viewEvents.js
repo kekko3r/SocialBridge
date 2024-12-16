@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../Config/axiosConfig';
-import './ViewEventsCreate.css'; // Assumendo che lo stile sia presente nel file CSS condiviso
+import './viewEvents.css'; // Assumendo che lo stile sia presente nel file CSS condiviso
 
 const EventiUtente = () => {
     const [eventi, setEventi] = useState([]);

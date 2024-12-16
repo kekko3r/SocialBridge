@@ -24,7 +24,7 @@ function Navbar({ isAuthenticated }) {
             </div>
             <div className="nav-links">
                 <Link to="/">Home</Link>
-                {isAuthenticated && <Link to="/events">Eventi</Link>}
+                <Link to="/events">Eventi</Link>
                 {isAuthenticated && <a href="/events-participate">Eventi Prenotati</a>}
                 {isAuthenticated && <Link to="/search-user">Cerca Utente</Link>}
                 {isAuthenticated && <Link to="/my-events">Eventi Creati</Link>}
